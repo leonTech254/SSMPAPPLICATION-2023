@@ -1,0 +1,78 @@
+<ConversationScreen>
+    MDBoxLayout:
+        orientation:"vertical"
+        MDBoxLayout:
+            adaptive_height:True
+            height:"100dp"
+            md_bg_color:app.theme_cls.primary_color
+            spacing:"10dp"
+            MDCard:
+                size_hint:None,None
+                size:50,50
+                radius:"50dp"
+                md_bg_color:1,1,0,.7
+                pos_hint:{"center_y":.5,"center_x":.5}
+                elevation:0
+                FitImage:
+                    id:imageProfile
+                    source:"Screenshot_20220721_163833.png"
+                    radius:[50,]
+            MDBoxLayout:
+                adaptive_height:True
+                orientation:"vertical"
+                MDLabel:
+                    text:"Martin Leon"
+                    adaptive_height:True
+                    bold:True
+                MDLabel:
+                    text:"last seen 20:56pm"
+                    adaptive_height:True
+                Widget:
+            MDBoxLayout:
+                adaptive_height:True
+                spacing:"20dp"
+                MDIconButton:
+                    icon:"video"
+                MDIconButton:
+                    icon:"phone"
+                MDIconButton:
+                    icon:"dots-vertical"
+
+            
+
+        MDBoxLayout:
+            adaptive_height:True
+            height:"100dp"
+            md_bg_color:app.theme_cls.primary_color
+            MDCard:
+                md_bg_color:app.theme_cls.primary_color
+                adaptive_height:True
+                radius:[20,20,0,0]
+                padding:"10px"
+                MDBoxLayout:
+                    adaptive_height:True
+                    orientation:"vertical"
+                    MDLabel:
+                        text:"Integrity Check"
+                        adaptive_height:True
+                        halign:"center"
+                    MDIconButton:
+                        icon:"dots-circle"
+                        pos_hint: {'center_x': 0.5,'center_y': 0.5}
+
+                MDBoxLayout:
+                    adaptive_height:True
+                    orientation:"vertical"
+                    MDLabel:
+                        text:"Unlock messages"
+                        adaptive_height:True
+                        halign:"center"
+                    MDIconButton:
+                        icon:"key-chain-variant"
+                        pos_hint: {'center_x': 0.5,'center_y': 0.5}
+
+
+            
+
+        Widget:
+    

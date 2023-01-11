@@ -1,14 +1,66 @@
-<ChatTab>
+# <ChatItem>:
+#     text: root.name
+#     secondary_text: root.last_msg
+#      ImageRightWidget:
+#         source: ""
+<ChatUser>:
+    padding:"10px"
+    size_hint_y:None
+    spacing:"10dp"
+    ripple_behavior: True
+    md_bg_color: 0, 0, 0, 0
+    elevation: 0
+    size_hint_y: None
+    padding: [10, 0, 10, 0]
+    spacing: 10
+    on_press:app.converationScreen(root.name)
     MDBoxLayout:
-        ScrollView:
-            MDBoxLayout:
-                adaptive_height:True
-                orientation:"vertical"
-                spacing:"2dp"
-                MDList:
-                    ChatItem:
-                        text: self.name
-                        secondary_text: self.last_msg
+        orientation:"vertical"
+        spacing:"10dp"
+        adaptive_size:True
+        Widget:
+        MDCard:
+            size_hint:None,None
+            size:50,50
+            radius:"50dp"
+            md_bg_color:1,1,0,.7
+            pos_hint:{"center_y":.5,"center_x":.5}
+            elevation:0
+            FitImage:
+                id:imageProfile
+                source:"Screenshot_20220721_163833.png"
+                radius:[50,]
+        Widget:
+    MDBoxLayout:
+        orientation:"vertical"
+        Widget:
+        MDLabel:
+            adaptive_height:True
+            text:root.name
+            bold:True
+            valign: "middle"
+        MDLabel:
+            adaptive_height:True
+            valign: "middle"
+            text:root.last_msg
+        Widget:
+    
+    MDBoxLayout:
+        size_hint:None,1
+        orientation:"vertical"
+        pos_hint:{"center_y":.5}
+        Widget:
+        MDLabel:
+            adaptive_height:True
+            text:root.date
+            valign: "middle"
+        MDIcon:
+            icon:"checkbox-multiple-marked-circle"
+        Widget:
+        
+        
+
+
 
 
                 

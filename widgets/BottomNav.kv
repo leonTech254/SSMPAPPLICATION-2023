@@ -1,0 +1,31 @@
+<NavBar@MDBoxLayout>:
+    orientation:"vertical"
+    size_hint_y: None
+    padding:[0,0,0,10]
+    one:[1,1,1,.5]
+    two:[1,1,1,.5]
+    three:[1,1,1,.5]
+    MDCard:
+        id:mynav
+        radius:[18, ]
+        md_bg_color:app.theme_cls.primary_color
+        padding:[10,0,10,0]
+        size_hint:None,None
+        width:220
+        height:40
+        pos_hint:{'center_x':.5}
+        NavIcon:
+            text_color:root.one
+            icon:'message-minus-outline'
+        NavIcon:
+            text_color:root.two
+            icon:'contacts'
+        NavIcon:
+            text_color:root.three
+            icon:'phone-in-talk-outline'
+<NavIcon@MDIconButton>:
+    pos_hint:{'center_y':.5}
+    theme_text_color:'Custom'
+    size_hint_x:.1
+    user_font_size:20
+    size:45,45

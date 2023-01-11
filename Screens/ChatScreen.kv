@@ -1,31 +1,44 @@
 <ChatScreen>
     MDBoxLayout:
         orientation:"vertical"
+        MDTopAppBar:
+            title: 'SSMP APPLICATION'
+            pos_hint: {"top": 1}
+            elevation: 4
+            use_overflow: True
+            right_action_items:
+                [
+                ["home", lambda x: app.callback(x), "Home", "Home"],
+                ["message-star", lambda x: app.callback(x), "Message star", "Message star"],
+                ["message-question", lambda x: app.callback(x), "Message question", "Message question"],
+                ["message-reply", lambda x: app.callback(x), "Message reply", "Message reply"],
+                ]
+        MDTabs:
+            ChatTab:
+                id:chatTab
+                title:"Chats"
+            Status:
+                title:"status"
+            Calls:
+                title:"calls"
+        
+<ChatTab>:
+    ScrollView:
+        do_scroll_y: True
+        bar_width: 0
         MDBoxLayout:
-            orientation:"vertical"
-            MDTopAppBar:
-                title: 'SSMP APPLICATION'
-                pos_hint: {"top": 1}
-                elevation: 4
-                use_overflow: True
-                right_action_items:
-                    [
-                    ["home", lambda x: app.callback(x), "Home", "Home"],
-                    ["message-star", lambda x: app.callback(x), "Message star", "Message star"],
-                    ["message-question", lambda x: app.callback(x), "Message question", "Message question"],
-                    ["message-reply", lambda x: app.callback(x), "Message reply", "Message reply"],
-                    ]
-            MDTabs:
-                ChatTab:
-                    title:"CHATS"
-                Status:
-                    title:"status"
-                Calls:
-                    title:"calls"
-                
-                
-
-            MDFloatingActionButtonSpeedDial:
-                label_text_color: "orange"
-                icon: "android"
+            orientation: 'vertical'
+            md_bg_color: app.theme_cls.bg_normal
+            size_hint_y: None
+            adaptive_height: True
+            radius: [20, 20, 0, 0]
+            padding: [0, 0, 0, 40]
+            MDLabel:
+                adaptive_height:True
+            MDList:
+                id: chatlist
+    MDBoxLayout:
+        NavBar:
+            one:[1,1,1,1]
             
+

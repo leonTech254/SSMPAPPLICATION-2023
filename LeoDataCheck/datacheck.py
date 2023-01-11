@@ -61,12 +61,12 @@ class ManageMessages:
                     messageDict['user']='friend'
                 MessagesList.append(messageDict)
             return MessagesList
-    def Chats(mycode,chatcode):
+    def Chats():
         check = f"SELECT * FROM Chats"
         messages = cursor.execute(check).fetchall()
         ChatList=[]
         if not messages:
-            return "Empty"
+            return "None"
         else:
             for message in messages:
                 ChatDict={}
