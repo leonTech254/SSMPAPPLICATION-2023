@@ -59,7 +59,6 @@
                     MDIconButton:
                         icon:"dots-circle"
                         pos_hint: {'center_x': 0.5,'center_y': 0.5}
-
                 MDBoxLayout:
                     adaptive_height:True
                     orientation:"vertical"
@@ -70,9 +69,38 @@
                     MDIconButton:
                         icon:"key-chain-variant"
                         pos_hint: {'center_x': 0.5,'center_y': 0.5}
+        ScrollView:
+            MDBoxLayout:
+                adaptive_height:True
+                orientation:"vertical"
+                spacing:"8dp"
+                MDCard:
+                    size_hint:None,None
+                    size:root.width/1.5,60
+                    md_bg_color:"red"
+                    pos_hint:{"right":1} #{'right': 1} if chtbld.sender == 'me' else {'left': 1}
+                MDCard:
+                    size_hint:None,None
+                    size:root.width/1.5,60
+                    md_bg_color:"red"
+                    pos_hint:{"left":1}
+        MDBoxLayout:
+            adaptive_height:True
+            spacing:"10dp"
+            MDTextField:
+                id:message
+                hint_text:"write message"
+                multiline:True
+                mode:"fill"
+            MDRaisedButton:
+                text:"SEND"
+                on_press:app.SendMessage(msg=message.text,receipient=self.receiver)
 
+                
+
+    
 
             
 
-        Widget:
+        
     
