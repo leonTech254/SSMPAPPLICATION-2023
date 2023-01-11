@@ -1,0 +1,45 @@
+<RegisterScreen>
+    MDBoxLayout:
+        orientation:"vertical"
+        MDBoxLayout:
+            orientation:"vertical"
+            height:"50dp"
+            MDCard:
+                size_hint:None,None
+                size:root.width/1.5,320
+                orientation:"vertical"
+                spacing:"10dp"
+                pos_hint:{'center_x':0.5,'center_y':0.5}
+                padding:"10dp"
+                Widget:
+                MDLabel:
+                    text:"Enter your phone number & Username"
+                    bold:True
+                    halign:"center"
+                    adaptive_height:True
+                MDLabel:
+                    text:" "
+                    id:response
+                    halign:"center"
+                    adaptive_height:True
+                    color:"red"
+                MDTextField:
+                    hint_text:"Username"
+                    id: username
+                MDTextField:
+                    hint_text:"phone Number"
+                    id:phoneNumber
+                    helper_text: "start with 254 e.g 254719531573"
+                MDRaisedButton:
+                    text:"NEXT"
+                    on_press:app.RegisterFunc(username=username.text,phone=phoneNumber.text)
+                MDLabel:
+                    text:"[i]SSMP will need to verify your phone number[/i]"
+                    adaptive_height:True
+                    halign:"center"
+                    markup:True
+                    color:"red"
+                Widget:
+            
+            
+        Widget:

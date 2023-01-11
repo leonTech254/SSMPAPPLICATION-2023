@@ -1,0 +1,35 @@
+<ValidateScreen>
+    MDBoxLayout:
+        orientation:"vertical"
+        MDBoxLayout:
+            orientation:"vertical"
+            height:"50dp"
+            MDCard:
+                size_hint:None,None
+                size:root.width/1.5,320
+                orientation:"vertical"
+                spacing:"10dp"
+                pos_hint:{'center_x':0.5,'center_y':0.5}
+                padding:"10dp"
+                Widget:
+                MDLabel:
+                    text:"WE SENT YOU CODE TO YOUR NUMBER"
+                    bold:True
+                    halign:"center"
+                    adaptive_height:True
+                MDLabel:
+                    text:" "
+                    id:response
+                    halign:"center"
+                    adaptive_height:True
+                    color:"red"
+                MDTextField:
+                    hint_text:"ENTER CODE"
+                    id:code
+                MDRaisedButton:
+                    text:"NEXT"
+                    on_press:app.CheckCode(code)
+                Widget:
+            
+            
+        Widget:
