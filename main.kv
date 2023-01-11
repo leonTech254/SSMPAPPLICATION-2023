@@ -1,0 +1,36 @@
+<IntoScreen>
+    MDBoxLayout:
+        orientation:"vertical"
+        spacing: '10dp'
+        MDBoxLayout:
+            adaptive_height:True
+            height: root.height/2
+            orientation: 'vertical'
+            MDCard:
+                orientation:"vertical"
+                padding:"10dp"
+                size_hint: None, None
+                size: root.width/2,root.width/2
+                radius:root.width/2
+                pos_hint:{'center_x':.5}
+        MDLabel:
+            text:"WELCOME TO SMART SECURE MESSAGE APP" 
+            halign:"center"
+            bold:True
+            adaptive_size:True
+            pos_hint: {'center_x': 0.5,'center_y': 0.5}
+            valign:"center"
+        MDLabel:
+            text:"securing your messages the smartest way"
+            adaptive_size:True
+            pos_hint: {'center_x': 0.5,'center_y': 0.5}
+            halign:"center"
+            valign:"center"
+        MDRaisedButton:
+            text:"AGREE AND CONTINUE"
+            pos_hint:{'center_x':.5,'center_y':.5}
+        Widget:
+
+        
+        
+
