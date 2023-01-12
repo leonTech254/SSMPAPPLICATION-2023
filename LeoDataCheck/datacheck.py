@@ -44,6 +44,7 @@ class Validate:
         else:
             query=f"UPDATE Users SET isValidated='true'"
             conn.execute(query)
+            conn.commit()
             return "success"
         
         
@@ -115,6 +116,23 @@ class Crud:
         values=(f'{code}',f'{msg}',f'{phone}',f'{code}',f'{date}',f'{checksum}')
         cursor.execute(users, values)
         conn.commit()
+    def UPdateChatList(username,date,message,code):
+        check = f"SELECT * FROM Chats WHERE DeviceCode='{code}'"
+        User = cursor.execute(check).fetchall()
+        if not User:
+            # add the user to the chat list
+            users="INSERT INTO Chats('username','msg','DeviceCode','MsgTimeStamp') VALUES(?,?,?,?)"
+            values=(f'{username}',f'{message}',f'{code}',f'{date}')
+            cursor.execute(users, values)
+            conn.commit()
+            print("inserted")
+            return "None"
+        else:
+            # update 
+            query=f"UPDATE Chats SET MsgTimeStamp='{date}', msg='{message}' WHERE DeviceCode='{code}'"
+            conn.execute(query)
+            conn.commit()
+            
         
                 
                 
@@ -136,3 +154,7 @@ class generate:
         tdate = now.strftime("%d""-%m" "-%y")
         regtime = cur+" Date-"+tdate
         return regtime
+    
+class Server:
+    def ssmpUsers():
+        return "None"

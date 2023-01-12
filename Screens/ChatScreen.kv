@@ -16,11 +16,16 @@
         MDTabs:
             ChatTab:
                 id:chatTab
+                icon:"message-text"
                 title:"Chats"
             Status:
+
+                icon:"timer"
                 title:"status"
-            Calls:
-                title:"calls"
+            FindFrinds:
+                id:allusersTab
+                icon:"account-plus"
+                title:"Find Friends"
         
 <ChatTab>:
     ScrollView:
@@ -42,3 +47,21 @@
             one:[1,1,1,1]
             
 
+<FindFrinds>:
+    ScrollView:
+        do_scroll_y: True
+        bar_width: 0
+        MDBoxLayout:
+            orientation: 'vertical'
+            md_bg_color: app.theme_cls.bg_normal
+            size_hint_y: None
+            adaptive_height: True
+            radius: [20, 20, 0, 0]
+            padding: [0, 0, 0, 40]
+            MDLabel:
+                adaptive_height:True
+            MDList:
+                id: ssmpUsers
+    MDBoxLayout:
+        NavBar:
+            one:[1,1,1,1]

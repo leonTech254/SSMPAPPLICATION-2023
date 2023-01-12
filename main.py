@@ -9,7 +9,7 @@ from kivymd.uix.list import MDList,TwoLineAvatarListItem,TwoLineRightIconListIte
 from kivy.properties import ObjectProperty,StringProperty
 from kivymd.uix.card import MDCard
 # data processing 
-from LeoDataCheck.datacheck import Validate,ManageMessages,generate,Crud
+from LeoDataCheck.datacheck import Validate,ManageMessages,generate,Crud,Server
 from LeoDataCheck.LeoEncryption import Integrity
 class WindowManager(ScreenManager):
     pass
@@ -32,10 +32,11 @@ class Status(MDFloatLayout,MDTabsBase):
     pass
 class Calls(MDFloatLayout,MDTabsBase):
     pass
+class FindFrinds(MDFloatLayout,MDTabsBase):
+    pass
 
 
-
-class ChatItem(TwoLineRightIconListItem):
+class SsmpUsers(TwoLineRightIconListItem):
     image=StringProperty()
     name=StringProperty()
     last_msg=StringProperty()
@@ -64,6 +65,7 @@ Builder.load_file("./widgets/BottomNav.kv")
 class TempStore:
     mycode=''
     usercode=''
+    receiverName=''
     
 class MainApp(MDApp):
     def build(self):
@@ -79,6 +81,7 @@ class MainApp(MDApp):
         data=Crud.myinfo()
         TempStore.mycode=data['code']
         self.wm.current="chatScreen"
+        self.allusers()
         ChatResponse=ManageMessages.Chats()
         if ChatResponse=="None":
             pass
@@ -95,9 +98,23 @@ class MainApp(MDApp):
                 self.chats.last_msg=msg
                 self.chats.date=time
                 self.chats.chatid=deviceID
-        
                 self.wm.get_screen("chatScreen").ids.chatTab.ids.chatlist.add_widget(self.chats)
-            
+    
+    def allSSMPUsers(self):
+        ChatResponse=Server.ssmpUsers()
+        if ChatResponse=="None":
+            pass
+        else:
+            for chat in ChatResponse:
+                username=chat['username']
+                deviceID=chat["deviceID"]
+                self.allusers=SsmpUsers()
+                self.allusers.image="hello"
+                self.allusers.name=username
+                self.allusers.chatid=deviceID
+                self.wm.get_screen("chatScreen").ids.allusersTab.ids.ssmpUsers.add_widget(self.allusers)
+               
+               
         
     def ManageScreens(self,screen):
         self.wm.current=screen
@@ -131,6 +148,7 @@ class MainApp(MDApp):
             self.wm.get_screen(self.wm.current).ids.response.text=codeResponse
     def converationScreen(self,name,chatId):
         TempStore.usercode=chatId
+        TempStore.receiverName=name
         self.wm.get_screen("conversationScreen").ids.username.text=name
         messagesResponse=ManageMessages.Messages(mycode=TempStore.mycode,chatcode=chatId)
         if messagesResponse!="None":
@@ -143,18 +161,19 @@ class MainApp(MDApp):
                 self.msg.time=time
                 self.msg.sender=user
                 self.wm.get_screen("conversationScreen").ids.loadConverstation.add_widget(self.msg)
-            
-        
         self.ManageScreens("conversationScreen")
         
     def SendMessage(self,msg):
         mycode=TempStore.mycode
         userCode=TempStore.usercode
+        usersName=TempStore.receiverName
         codeCombined=f"{mycode}-"+f"{userCode}"
         date=generate.date()
         phone='123'
         checksum=Integrity.checkSum(msg=msg)
         Crud.InsertMessage(msg=msg,code=codeCombined, date=date,phone=phone,checksum=checksum)
+        Crud.UPdateChatList(date=date,message=msg,username=usersName,code=userCode)
+        
         
         
         
