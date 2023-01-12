@@ -1,5 +1,7 @@
 import sqlite3
+import random
 conn = sqlite3.connect("hashDatabase.db")
+conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
 query="CREATE TABLE  IF NOT EXISTS  Users(username VARCHAR(100),phoneNumber VARCHAR(100),DeviceCode VARCHAR(100),isValidated VARCHAR(100) default 'false')"
 cursor.execute(query)
@@ -37,25 +39,32 @@ class Validate:
         if not result:
             return "invalid code"
         else:
+            query=f"UPDATE Users SET isValidated='true'"
+            conn.execute(query)
             return "success"
         
         
 class ManageMessages:
     def Messages(mycode,chatcode):
-        check = f"SELECT * FROM Messages WHERE DeviceCode='{chatcode}'"
+        check = f"SELECT * FROM Messages"# WHERE DeviceCode='{chatcode}'"
         messages = cursor.execute(check).fetchall()
         MessagesList=[]
+        
         if not messages:
-            return "Empty"
+            return "None"
         else:
+            print("hellosdf")
+            
             for message in messages:
+                print(message)
+                print(message)
                 messageDict={}
-                messageDict['deviceID']=message.DeviceCode
-                messageDict['username']=message.username    
-                messageDict['time']=message.MsgTimeStamp
-                messageDict['checksum']=message.msgCheckSum
-                messageDict['msg']=message.msg
-                if message.DeviceCode==mycode:
+                messageDict['deviceID']=message["DeviceCode"]
+                messageDict['username']=message["username"]    
+                messageDict['time']=message["MsgTimeStamp"]
+                messageDict['checksum']=message["msgCheckSum"]
+                messageDict['msg']=message["msg"]
+                if message["DeviceCode"]==mycode:
                     messageDict['user']='me'
                 else:
                     messageDict['user']='friend'
@@ -70,12 +79,23 @@ class ManageMessages:
         else:
             for message in messages:
                 ChatDict={}
-                ChatDict['deviceID']=message.DeviceCode
-                ChatDict['username']=message.username    
-                ChatDict['time']=message.MsgTimeStamp
-                ChatDict['msg']=message.msg
+                ChatDict['deviceID']=message["DeviceCode"]
+                ChatDict['username']=message["username"]    
+                ChatDict['time']=message["MsgTimeStamp"]
+                ChatDict['msg']=message["msg"]
                 ChatList.append(ChatDict)
             return ChatList
+class Crud:
+    def RegistrationData(username,phone,deviceID):
+        add_data = f"INSERT INTO Users(username,phoneNumber,DeviceCode) VALUES(?,?,?)"
+        values = (f'{username}', f'{phone}',f'{deviceID}')
+        cursor.execute(add_data, values)
+        conn.commit()
+        return "success"
         
-            
-        
+class generate:
+    def DeviceID(length):
+        code=""
+        for i in range(0,length):
+            code+=str(random.randint(0,9))
+        return code

@@ -1,2 +1,12 @@
-name="+254719531573"
-print(name[0:5])
+import sqlite3
+from LeoDataCheck.datacheck import generate
+conn=sqlite3.connect("hashDatabase.db")
+cursor = conn.cursor()
+
+
+for i in range(1,6):
+    users="INSERT INTO Messages('username','msg','phoneNumber','DeviceCode','MsgTimeStamp','msgCheckSum') VALUES(?,?,?,?,?,?)"
+    code=generate.DeviceID(length=2)
+    values=(f'jose+{code}','hello my name is jose','12345678',f'{code}','20:59','nswndw242ndwk')
+    cursor.execute(users, values)
+    conn.commit()

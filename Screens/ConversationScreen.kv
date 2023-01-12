@@ -21,11 +21,13 @@
                 adaptive_height:True
                 orientation:"vertical"
                 MDLabel:
-                    text:"Martin Leon"
+                    id:username
+                    text:" "
                     adaptive_height:True
                     bold:True
                 MDLabel:
-                    text:"last seen 20:56pm"
+                    text:" "
+                    id:online_status
                     adaptive_height:True
                 Widget:
             MDBoxLayout:
@@ -74,16 +76,7 @@
                 adaptive_height:True
                 orientation:"vertical"
                 spacing:"8dp"
-                MDCard:
-                    size_hint:None,None
-                    size:root.width/1.5,60
-                    md_bg_color:"red"
-                    pos_hint:{"right":1} #{'right': 1} if chtbld.sender == 'me' else {'left': 1}
-                MDCard:
-                    size_hint:None,None
-                    size:root.width/1.5,60
-                    md_bg_color:"red"
-                    pos_hint:{"left":1}
+                id:loadConverstation
         MDBoxLayout:
             adaptive_height:True
             spacing:"10dp"

@@ -8,7 +8,7 @@ from kivymd.uix.list import MDList,TwoLineAvatarListItem,TwoLineRightIconListIte
 from kivy.properties import ObjectProperty,StringProperty
 from kivymd.uix.card import MDCard
 # data processing 
-from LeoDataCheck.datacheck import Validate,ManageMessages
+from LeoDataCheck.datacheck import Validate,ManageMessages,generate,Crud
 class WindowManager(ScreenManager):
     pass
 
@@ -31,6 +31,8 @@ class Status(MDFloatLayout,MDTabsBase):
 class Calls(MDFloatLayout,MDTabsBase):
     pass
 
+
+
 class ChatItem(TwoLineRightIconListItem):
     image=StringProperty()
     name=StringProperty()
@@ -43,7 +45,8 @@ class ChatUser(MDCard):
     date=StringProperty()
     read=StringProperty()
     chatid=StringProperty()
-    
+class Converstation(MDCard):
+    pass
 
 
 # file loading
@@ -68,17 +71,24 @@ class MainApp(MDApp):
         return self.wm
     def on_start(self):
         self.wm.current="chatScreen"
-        ChatResponse=ManageMessages.Chats()
-        if ChatResponse=="Nodne":
+        ChatResponse=ManageMessages.Messages(chatcode=1,mycode=2)
+        if ChatResponse=="None":
             pass
         else:
-            for i in range(0,20):
+            for chat in ChatResponse:
+                print(chat)
+                username=chat['username']
+                time=chat["time"]
+                deviceID=chat["deviceID"]
+                msg=chat["msg"]
                 self.chats=ChatUser()
                 self.chats.image="hello"
-                self.chats.name="martin"
-                self.chats.last_msg="hello my name is martin"
-                self.chats.date="12:00 pm"
-                self.wm.get_screen(self.wm.current).ids.chatTab.ids.chatlist.add_widget(self.chats)
+                self.chats.name=username
+                self.chats.last_msg=msg
+                self.chats.date=time
+                self.chats.chatid=deviceID
+        
+                self.wm.get_screen("chatScreen").ids.chatTab.ids.chatlist.add_widget(self.chats)
             
         
     def ManageScreens(self,screen):
@@ -88,22 +98,33 @@ class MainApp(MDApp):
         if phoneResponse=="success":
             usernameResponse=Validate.username(name=username)
             if usernameResponse and phoneResponse=="success":
+                # generate device id
+                code=generate.DeviceID(length=6)
+                registrationResponse=Crud.RegistrationData(phone=phone,deviceID=code,username=username)
+                if registrationResponse=="success":
+                    print(code)
+                    print("data save saved successfully")
+                    
+                
                 self.ManageScreens("ValidateScreen")
             else:
                 self.wm.get_screen(self.wm.current).ids.response.text=phoneResponse   
         else:
             self.wm.get_screen(self.wm.current).ids.response.text=phoneResponse
     def CheckCode(self,code):
-        codeResponse=Validate.CheckCode(code=compile)
+        codeResponse=Validate.CheckCode(code=code)
+        # 288032
         if codeResponse=="success":
             # all user to move next screen
+            # send the details to the server
             self.ManageScreens("chatScreen")
             pass
         else:
             self.wm.get_screen(self.wm.current).ids.response.text=codeResponse
-    def converationScreen(self,chatId):
-
-        ManageMessages.Messages(mycode=TempStore.mycode,chatcode=chatId)
+    def converationScreen(self,name,chatId):
+        self.wm.get_screen("conversationScreen").ids.username.text=name
+        messagesResponse=ManageMessages.Messages(mycode=TempStore.mycode,chatcode=chatId)
+        
         self.ManageScreens("conversationScreen")
         
         

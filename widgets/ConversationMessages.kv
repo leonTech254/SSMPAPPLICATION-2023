@@ -1,0 +1,11 @@
+<Converstation>:
+    size_hint:None,None
+    size:root.width/1.5,60
+    md_bg_color:"red"
+    pos_hint:{"right":1} #{'right': 1} if chtbld.sender == 'me' else {'left': 1}
+    MDLabel:
+        text:root.msg
+        adaptive_height:True
+    MDLabel:
+        text:root.time
+        adaptive_height:True
