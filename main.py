@@ -4,11 +4,13 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager,Screen,FadeTransition
 from kivymd.uix.tab import MDTabs,MDTabsBase
 from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.list import MDList,TwoLineAvatarListItem,TwoLineRightIconListItem
 from kivy.properties import ObjectProperty,StringProperty
 from kivymd.uix.card import MDCard
 # data processing 
 from LeoDataCheck.datacheck import Validate,ManageMessages,generate,Crud
+from LeoDataCheck.LeoEncryption import Integrity
 class WindowManager(ScreenManager):
     pass
 
@@ -45,8 +47,10 @@ class ChatUser(MDCard):
     date=StringProperty()
     read=StringProperty()
     chatid=StringProperty()
-class Converstation(MDCard):
-    pass
+class Converstations(MDBoxLayout):
+    msg=StringProperty()
+    time=StringProperty()
+    sender=StringProperty()
 
 
 # file loading
@@ -54,10 +58,12 @@ Builder.load_file("./Screens/Register.kv")
 Builder.load_file("./Screens/ValidateScreen.kv")
 Builder.load_file("./Screens/ChatScreen.kv")
 Builder.load_file("./Screens/ConversationScreen.kv")
+Builder.load_file("./widgets/ConversationMessages.kv")
 Builder.load_file("./widgets/ChatsLists.kv")
 Builder.load_file("./widgets/BottomNav.kv")
 class TempStore:
     mycode=''
+    usercode=''
     
 class MainApp(MDApp):
     def build(self):
@@ -70,8 +76,10 @@ class MainApp(MDApp):
             self.wm.add_widget(screen)
         return self.wm
     def on_start(self):
+        data=Crud.myinfo()
+        TempStore.mycode=data['code']
         self.wm.current="chatScreen"
-        ChatResponse=ManageMessages.Messages(chatcode=1,mycode=2)
+        ChatResponse=ManageMessages.Chats()
         if ChatResponse=="None":
             pass
         else:
@@ -122,10 +130,34 @@ class MainApp(MDApp):
         else:
             self.wm.get_screen(self.wm.current).ids.response.text=codeResponse
     def converationScreen(self,name,chatId):
+        TempStore.usercode=chatId
         self.wm.get_screen("conversationScreen").ids.username.text=name
         messagesResponse=ManageMessages.Messages(mycode=TempStore.mycode,chatcode=chatId)
+        if messagesResponse!="None":
+            for message in messagesResponse:
+                msg=message['msg']
+                time=message['time']
+                user=message['user']
+                self.msg=Converstations()
+                self.msg.msg=msg
+                self.msg.time=time
+                self.msg.sender=user
+                self.wm.get_screen("conversationScreen").ids.loadConverstation.add_widget(self.msg)
+            
         
         self.ManageScreens("conversationScreen")
+        
+    def SendMessage(self,msg):
+        mycode=TempStore.mycode
+        userCode=TempStore.usercode
+        codeCombined=f"{mycode}-"+f"{userCode}"
+        date=generate.date()
+        phone='123'
+        checksum=Integrity.checkSum(msg=msg)
+        Crud.InsertMessage(msg=msg,code=codeCombined, date=date,phone=phone,checksum=checksum)
+        
+        
+        
         
         
 

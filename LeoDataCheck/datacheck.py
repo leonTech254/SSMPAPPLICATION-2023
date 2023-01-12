@@ -1,5 +1,8 @@
 import sqlite3
 import random
+import re
+import datetime
+from datetime import timezone
 conn = sqlite3.connect("hashDatabase.db")
 conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
@@ -46,25 +49,27 @@ class Validate:
         
 class ManageMessages:
     def Messages(mycode,chatcode):
-        check = f"SELECT * FROM Messages"# WHERE DeviceCode='{chatcode}'"
+        check = f"SELECT * FROM Messages WHERE DeviceCode LIKE '%{chatcode}%'"
         messages = cursor.execute(check).fetchall()
+        
         MessagesList=[]
         
         if not messages:
             return "None"
         else:
-            print("hellosdf")
             
             for message in messages:
-                print(message)
-                print(message)
+                allID=message["DeviceCode"]
+                myId=allID.split("-")[0]
+                print(myId)
+                print(mycode+"hear")
                 messageDict={}
                 messageDict['deviceID']=message["DeviceCode"]
                 messageDict['username']=message["username"]    
                 messageDict['time']=message["MsgTimeStamp"]
                 messageDict['checksum']=message["msgCheckSum"]
                 messageDict['msg']=message["msg"]
-                if message["DeviceCode"]==mycode:
+                if myId==mycode:
                     messageDict['user']='me'
                 else:
                     messageDict['user']='friend'
@@ -92,6 +97,30 @@ class Crud:
         cursor.execute(add_data, values)
         conn.commit()
         return "success"
+    def myinfo():
+        check = f"SELECT * FROM Users"# WHERE DeviceCode='{chatcode}'"
+        Users = cursor.execute(check).fetchall()
+        userInfo={}
+        if not Users:
+            return "None"
+        else:
+            for user in Users:
+                userInfo["code"]=user['DeviceCode']
+                userInfo['username']=user['username']
+                
+            return userInfo
+    def InsertMessage(msg,code,date,phone,checksum):
+        print(code)
+        users="INSERT INTO Messages('username','msg','phoneNumber','DeviceCode','MsgTimeStamp','msgCheckSum') VALUES(?,?,?,?,?,?)"
+        values=(f'{code}',f'{msg}',f'{phone}',f'{code}',f'{date}',f'{checksum}')
+        cursor.execute(users, values)
+        conn.commit()
+        
+                
+                
+            
+            
+        
         
 class generate:
     def DeviceID(length):
@@ -99,3 +128,11 @@ class generate:
         for i in range(0,length):
             code+=str(random.randint(0,9))
         return code
+    def date():
+        now = datetime.datetime.now(timezone.utc)
+        current_time = now.strftime("%H:%M:%S")
+        hours = int(current_time[:2])
+        cur = re.sub(current_time[:2], str(hours), current_time)
+        tdate = now.strftime("%d""-%m" "-%y")
+        regtime = cur+" Date-"+tdate
+        return regtime
