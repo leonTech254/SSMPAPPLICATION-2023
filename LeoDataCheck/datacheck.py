@@ -2,6 +2,8 @@ import sqlite3
 import random
 import re
 import datetime
+import requests
+from kivy.network.urlrequest import UrlRequest
 from datetime import timezone
 conn = sqlite3.connect("hashDatabase.db")
 conn.row_factory = sqlite3.Row
@@ -9,7 +11,7 @@ cursor = conn.cursor()
 query="CREATE TABLE  IF NOT EXISTS  Users(username VARCHAR(100),phoneNumber VARCHAR(100),DeviceCode VARCHAR(100),isValidated VARCHAR(100) default 'false')"
 cursor.execute(query)
 # messages
-query="CREATE TABLE  IF NOT EXISTS  Messages(username VARCHAR(100),msg VARCHAR(100),phoneNumber VARCHAR(100),DeviceCode VARCHAR(100), MsgTimeStamp VARCHAR(100),msgCheckSum VARCHAR(100))"
+query="CREATE TABLE  IF NOT EXISTS  Messages(chatKey VARCHAR(100),msg VARCHAR(100),phoneNumber VARCHAR(100),DeviceCode VARCHAR(100),msgFlag VARCHAR(100) default 'checked',MsgTimeStamp VARCHAR(100),msgCheckSum VARCHAR(100))"
 cursor.execute(query)
 query="CREATE TABLE  IF NOT EXISTS  Chats(username VARCHAR(100),msg VARCHAR(100),DeviceCode VARCHAR(100), MsgTimeStamp VARCHAR(100))"
 cursor.execute(query)
@@ -49,8 +51,8 @@ class Validate:
         
         
 class ManageMessages:
-    def Messages(mycode,chatcode):
-        check = f"SELECT * FROM Messages WHERE DeviceCode LIKE '%{chatcode}%'"
+    def Messages(mycode,chatcode,orCode):
+        check = f"SELECT * FROM Messages WHERE chatKey='{chatcode}' OR chatKey='{orCode}'"
         messages = cursor.execute(check).fetchall()
         
         MessagesList=[]
@@ -66,11 +68,11 @@ class ManageMessages:
                 print(mycode+"hear")
                 messageDict={}
                 messageDict['deviceID']=message["DeviceCode"]
-                messageDict['username']=message["username"]    
+                messageDict['username']=message["chatKey"]    
                 messageDict['time']=message["MsgTimeStamp"]
                 messageDict['checksum']=message["msgCheckSum"]
                 messageDict['msg']=message["msg"]
-                if myId==mycode:
+                if allID==chatcode:
                     messageDict['user']='me'
                 else:
                     messageDict['user']='friend'
@@ -112,7 +114,7 @@ class Crud:
             return userInfo
     def InsertMessage(msg,code,date,phone,checksum):
         print(code)
-        users="INSERT INTO Messages('username','msg','phoneNumber','DeviceCode','MsgTimeStamp','msgCheckSum') VALUES(?,?,?,?,?,?)"
+        users="INSERT INTO Messages('chatKey','msg','phoneNumber','DeviceCode','MsgTimeStamp','msgCheckSum') VALUES(?,?,?,?,?,?)"
         values=(f'{code}',f'{msg}',f'{phone}',f'{code}',f'{date}',f'{checksum}')
         cursor.execute(users, values)
         conn.commit()
@@ -158,3 +160,47 @@ class generate:
 class Server:
     def ssmpUsers():
         return "None"
+    
+    def registerUser(username,phone,deviceID):
+        url="http://127.0.0.1:5000/ssmp/allusers"
+        data = {'username': username,'phone':phone,'deviceID':deviceID}
+        response = requests.post(url, json=data)
+        print(response.status_code)
+        contents=response.json()
+        return contents['message']
+    def getUsers():
+        url="http://127.0.0.1:5000/ssmp/allusers"
+        response = requests.get(url)
+        contents=response.json()
+        return contents['users']
+    def SendMessage(msg,code,date,phone,checksum):
+        url="http://127.0.0.1:5000/ssmp/messages"
+        data = {'chatKey': code,'msg':msg,'time':date,'code':code,'checksum':checksum}
+        response = requests.post(url, json=data)
+        print(response.status_code)
+        contents=response.json()
+        return contents['message']
+    
+    def LoadConversation(chatCode,orCode):
+        url="http://127.0.0.1:5000/ssmp/load/conversation"
+        data = {'chatcode':chatCode,'orcode':orCode}
+        try:
+            response = requests.post(url, json=data,timeout=5)
+            print(response.status_code)
+            contents=response.json()
+            print(contents['messages'])
+            MessageList=[]
+            if contents['messages']!="None":
+                messageDict={}
+                messageDict['message']='success'
+                MessageList.append(messageDict)
+                MessageList.append(contents['messages'])
+                return MessageList
+            else:
+                return contents[{'message':"None"}]
+        except:
+            return contents[{'message':"None"}]
+            
+        
+   
+        

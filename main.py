@@ -1,3 +1,5 @@
+# cython: language_level=3
+
 from kivymd.app import MDApp
 from kivymd.uix.label import MDLabel
 from kivy.lang import Builder
@@ -11,6 +13,9 @@ from kivymd.uix.card import MDCard
 # data processing 
 from LeoDataCheck.datacheck import Validate,ManageMessages,generate,Crud,Server
 from LeoDataCheck.LeoEncryption import Integrity
+from Network.leoNetwork import Server2,serverStore
+from kivy.clock import Clock
+import requests
 class WindowManager(ScreenManager):
     pass
 
@@ -36,9 +41,10 @@ class FindFrinds(MDFloatLayout,MDTabsBase):
     pass
 
 
-class SsmpUsers(TwoLineRightIconListItem):
+class SsmpUsers(MDBoxLayout):
     image=StringProperty()
     name=StringProperty()
+    code=StringProperty()
     last_msg=StringProperty()
     name="martin"
 class ChatUser(MDCard):
@@ -62,6 +68,7 @@ Builder.load_file("./Screens/ConversationScreen.kv")
 Builder.load_file("./widgets/ConversationMessages.kv")
 Builder.load_file("./widgets/ChatsLists.kv")
 Builder.load_file("./widgets/BottomNav.kv")
+Builder.load_file("./widgets/SSMPUsersList.kv")
 class TempStore:
     mycode=''
     usercode=''
@@ -78,16 +85,17 @@ class MainApp(MDApp):
             self.wm.add_widget(screen)
         return self.wm
     def on_start(self):
+        
         data=Crud.myinfo()
-        TempStore.mycode=data['code']
+        if data!="None":
+            TempStore.mycode=data['code']
         self.wm.current="chatScreen"
-        self.allusers()
+        self.allSSMPUsers()
         ChatResponse=ManageMessages.Chats()
         if ChatResponse=="None":
             pass
         else:
             for chat in ChatResponse:
-                print(chat)
                 username=chat['username']
                 time=chat["time"]
                 deviceID=chat["deviceID"]
@@ -101,17 +109,17 @@ class MainApp(MDApp):
                 self.wm.get_screen("chatScreen").ids.chatTab.ids.chatlist.add_widget(self.chats)
     
     def allSSMPUsers(self):
-        ChatResponse=Server.ssmpUsers()
-        if ChatResponse=="None":
+        ssmpUsers=Server.getUsers()
+        if ssmpUsers=="None":
             pass
         else:
-            for chat in ChatResponse:
-                username=chat['username']
-                deviceID=chat["deviceID"]
+            for user in ssmpUsers:
+                username=user['username']
+                deviceID=user["code"]
                 self.allusers=SsmpUsers()
                 self.allusers.image="hello"
                 self.allusers.name=username
-                self.allusers.chatid=deviceID
+                self.allusers.code=deviceID
                 self.wm.get_screen("chatScreen").ids.allusersTab.ids.ssmpUsers.add_widget(self.allusers)
                
                
@@ -125,13 +133,12 @@ class MainApp(MDApp):
             if usernameResponse and phoneResponse=="success":
                 # generate device id
                 code=generate.DeviceID(length=6)
-                registrationResponse=Crud.RegistrationData(phone=phone,deviceID=code,username=username)
-                if registrationResponse=="success":
-                    print(code)
-                    print("data save saved successfully")
-                    
-                
-                self.ManageScreens("ValidateScreen")
+                serverResponse=Server.registerUser(phone=phone,deviceID=code,username=username)
+                if serverResponse=="success":
+                    registrationResponse=Crud.RegistrationData(phone=phone,deviceID=code,username=username)
+                    if registrationResponse=="success":
+                        print("data save saved successfully")
+                    self.ManageScreens("ValidateScreen")
             else:
                 self.wm.get_screen(self.wm.current).ids.response.text=phoneResponse   
         else:
@@ -146,11 +153,26 @@ class MainApp(MDApp):
             pass
         else:
             self.wm.get_screen(self.wm.current).ids.response.text=codeResponse
+    def refreshConversation(self,nap):
+        print(Server2.newMessages())
+        if Server2.newMessages()=="new":
+            Server2.closeMessage()
+            chatId=TempStore.usercode
+            mycode=TempStore.mycode       
+            name=TempStore.receiverName
+            self.wm.get_screen("conversationScreen").ids.loadConverstation.clear_widgets()
+            self.converationScreen(name=name,chatId=chatId)
+            
     def converationScreen(self,name,chatId):
+        Clock.unschedule(self.refreshConversation)
         TempStore.usercode=chatId
+        mycode=TempStore.mycode
+        codeCombined=f"{mycode}-"+f"{chatId}"
+        OrCode=f"{chatId}-"+f"{mycode}"       
         TempStore.receiverName=name
         self.wm.get_screen("conversationScreen").ids.username.text=name
-        messagesResponse=ManageMessages.Messages(mycode=TempStore.mycode,chatcode=chatId)
+        messagesResponse=ManageMessages.Messages(mycode=TempStore.mycode,chatcode=codeCombined,orCode=OrCode)
+        Server2.LoadConversation(chatCode=codeCombined,orCode=OrCode)
         if messagesResponse!="None":
             for message in messagesResponse:
                 msg=message['msg']
@@ -162,6 +184,12 @@ class MainApp(MDApp):
                 self.msg.sender=user
                 self.wm.get_screen("conversationScreen").ids.loadConverstation.add_widget(self.msg)
         self.ManageScreens("conversationScreen")
+        # for refreshing the conversation screen
+        Clock.schedule_interval(self.refreshConversation, 3)
+        
+        
+            
+            
         
     def SendMessage(self,msg):
         mycode=TempStore.mycode
@@ -171,8 +199,9 @@ class MainApp(MDApp):
         date=generate.date()
         phone='123'
         checksum=Integrity.checkSum(msg=msg)
-        Crud.InsertMessage(msg=msg,code=codeCombined, date=date,phone=phone,checksum=checksum)
+        # Crud.InsertMessage(msg=msg,code=codeCombined, date=date,phone=phone,checksum=checksum)
         Crud.UPdateChatList(date=date,message=msg,username=usersName,code=userCode)
+        Server.SendMessage(msg=msg,code=codeCombined, date=date,phone=phone,checksum=checksum)
         
         
         
