@@ -84,11 +84,12 @@ class MainApp(MDApp):
             self.wm.add_widget(screen)
         return self.wm
     def on_start(self):
-        
         data=Crud.myinfo()
         if data!="None":
             TempStore.mycode=data['code']
-        self.wm.current="chatScreen"
+            self.wm.current="chatScreen"
+        else:
+            self.wm.current="intoScreen"
         self.allSSMPUsers()
         ChatResponse=ManageMessages.Chats()
         if ChatResponse=="None":
@@ -113,13 +114,17 @@ class MainApp(MDApp):
             pass
         else:
             for user in ssmpUsers:
-                username=user['username']
                 deviceID=user["code"]
-                self.allusers=SsmpUsers()
-                self.allusers.image="hello"
-                self.allusers.name=username
-                self.allusers.code=deviceID
-                self.wm.get_screen("chatScreen").ids.allusersTab.ids.ssmpUsers.add_widget(self.allusers)
+                if deviceID==TempStore.mycode:
+                    pass
+                else:
+                    username=user['username']
+                    deviceID=user["code"]
+                    self.allusers=SsmpUsers()
+                    self.allusers.image="hello"
+                    self.allusers.name=username
+                    self.allusers.code=deviceID
+                    self.wm.get_screen("chatScreen").ids.allusersTab.ids.ssmpUsers.add_widget(self.allusers)
                
                
         
