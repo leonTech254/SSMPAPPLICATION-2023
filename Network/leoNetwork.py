@@ -22,7 +22,8 @@ class Server2:
             # conn.commit()
             rowAdded=len(messages)-len(localmessages)
             messages.reverse()
-            messages=messages[rowAdded]
+            messages=messages[:rowAdded]
+            
             for message in messages:
                 msg=message['msg']
                 time=message['time']
