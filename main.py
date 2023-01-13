@@ -46,7 +46,6 @@ class SsmpUsers(MDBoxLayout):
     name=StringProperty()
     code=StringProperty()
     last_msg=StringProperty()
-    name="martin"
 class ChatUser(MDCard):
     image=StringProperty()
     name=StringProperty()
@@ -202,6 +201,13 @@ class MainApp(MDApp):
         # Crud.InsertMessage(msg=msg,code=codeCombined, date=date,phone=phone,checksum=checksum)
         Crud.UPdateChatList(date=date,message=msg,username=usersName,code=userCode)
         Server.SendMessage(msg=msg,code=codeCombined, date=date,phone=phone,checksum=checksum)
+        # updating the chatscreen temporary
+        self.msg=Converstations()
+        self.msg.msg=msg
+        self.msg.time=date
+        self.msg.sender=mycode
+        self.msg.sender="me"
+        self.wm.get_screen("conversationScreen").ids.loadConverstation.add_widget(self.msg)
         
         
         

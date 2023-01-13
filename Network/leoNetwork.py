@@ -23,7 +23,6 @@ class Server2:
             rowAdded=len(messages)-len(localmessages)
             messages.reverse()
             messages=messages[:rowAdded]
-            
             for message in messages:
                 msg=message['msg']
                 time=message['time']
@@ -37,6 +36,18 @@ class Server2:
                 values=(f'{code}',f'{msg}',f'{phone}',f'{code}',f'{date}',f'{checksum}')
                 cursor.execute(users, values)
                 conn.commit()
+            # updating the chatList
+            msg=messages[0]
+            username=msg['username']
+            date=msg['time']
+            message=message['msg']
+            code=serverStore.chatcode.split('-')[1]
+            query=f"UPDATE Chats SET MsgTimeStamp='{date}', msg='{message}' WHERE DeviceCode='{code}'"
+            conn.execute(query)
+            conn.commit()
+            
+            
+            
             serverStore.newMessages='new'
             
             
