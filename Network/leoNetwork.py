@@ -32,10 +32,16 @@ class Server2:
                 code=message['deviceID']
                 date=message['time']
                 checksum=message['checksum']
+                flag=message['flag']
                 users="INSERT INTO Messages('chatKey','msg','phoneNumber','DeviceCode','MsgTimeStamp','msgCheckSum') VALUES(?,?,?,?,?,?)"
                 values=(f'{code}',f'{msg}',f'{phone}',f'{code}',f'{date}',f'{checksum}')
                 cursor.execute(users, values)
                 conn.commit()
+                if flag!='checked':
+                    query=f"UPDATE Messages SET msgFlag='{flag}' WHERE DeviceCode='{code}'"
+                    conn.execute(query)
+                    conn.commit()
+                    
             # updating the chatList
             msg=messages[0]
             username=msg['username']

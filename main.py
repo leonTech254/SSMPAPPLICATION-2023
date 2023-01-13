@@ -10,6 +10,8 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.list import MDList,TwoLineAvatarListItem,TwoLineRightIconListItem
 from kivy.properties import ObjectProperty,StringProperty
 from kivymd.uix.card import MDCard
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFlatButton,MDRaisedButton
 # data processing 
 from LeoDataCheck.datacheck import Validate,ManageMessages,generate,Crud,Server
 from LeoDataCheck.LeoEncryption import Integrity
@@ -57,7 +59,10 @@ class Converstations(MDBoxLayout):
     msg=StringProperty()
     time=StringProperty()
     sender=StringProperty()
-
+    originalmsg=StringProperty()
+    checksum=StringProperty()
+class Item(TwoLineAvatarListItem):
+    pass
 
 # file loading
 Builder.load_file("./Screens/Register.kv")
@@ -72,8 +77,9 @@ class TempStore:
     mycode=''
     usercode=''
     receiverName=''
-    
+
 class MainApp(MDApp):
+    dialog = None
     def build(self):
         self.theme_cls.theme_style="Dark"
         self.theme_cls.primary_palette="Cyan"
@@ -182,10 +188,12 @@ class MainApp(MDApp):
                 msg=message['msg']
                 time=message['time']
                 user=message['user']
+                checksum=message['checksum']
                 self.msg=Converstations()
                 self.msg.msg=msg
                 self.msg.time=time
                 self.msg.sender=user
+                self.msg.checksum=checksum
                 self.wm.get_screen("conversationScreen").ids.loadConverstation.add_widget(self.msg)
         self.ManageScreens("conversationScreen")
         # for refreshing the conversation screen
@@ -213,9 +221,18 @@ class MainApp(MDApp):
         self.msg.sender=mycode
         self.msg.sender="me"
         self.wm.get_screen("conversationScreen").ids.loadConverstation.add_widget(self.msg)
-        
-        
-        
+    def viewMessage(self,message,checksum):
+        if not self.dialog:
+                self.dialog = MDDialog(title="MESSAGE SUMMURY",type="simple",
+                        items=[Item(text="PLAIN MESSAGE",secondary_text=message),
+                        Item(text="CHECKSUM",secondary_text=checksum),
+                    ],
+                        buttons=[
+                        MDRaisedButton(text="CLOSE"),
+                        ],
+                )
+                self.dialog.open()
+                    
         
         
         
