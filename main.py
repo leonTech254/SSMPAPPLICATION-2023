@@ -127,7 +127,6 @@ class MainApp(MDApp):
             self.wm.get_screen(self.wm.current).ids.incomplete.text="complete registration"
         else:
             self.wm.current="intoScreen"
-        self.wm.current="ValidateScreen"
             
             
         self.allSSMPUsers()
