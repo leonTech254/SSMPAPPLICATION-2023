@@ -17,7 +17,9 @@ from LeoDataCheck.LeoEncryption import Integrity,Encryption
 from Network.leoNetwork import Server2,serverStore
 from kivy.clock import Clock
 import requests
-from BIOMETRIC.boo import Bioo,run_on_ui_thread
+import platform
+if platform.system()=="Android":
+    from BIOMETRIC.boo import Bioo,run_on_ui_thread
 
 class WindowManager(ScreenManager):
     def __init__(self, **kwargs):
@@ -318,10 +320,12 @@ class MainApp(MDApp):
         self.messageViewed=message
         self.checksumViewed=checksum
         self.flagViewed=flag
-        if str(Bioo().get_auth()) == "0":
-            Bioo().auth_now(self.my_auth_callback)
-            print("hello kenya")
-            self.lockViewOnce=2
+        if platform.system()=="Android":
+            if str(Bioo().get_auth()) == "0":
+                Bioo().auth_now(self.my_auth_callback)
+                print("hello kenya")
+        else:
+            pass
 
     def my_auth_callback(self, args):
         if not self.authentication_done:

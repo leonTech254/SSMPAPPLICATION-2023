@@ -5,4 +5,4 @@ cd -
 
 git add .
 git commit -m "--update-auto"
-git push -u origin main
+#git push -u origin main
