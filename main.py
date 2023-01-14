@@ -18,7 +18,7 @@ from Network.leoNetwork import Server2,serverStore
 from kivy.clock import Clock
 import requests
 import platform
-runon='android'
+runon='androdid'
 if runon=="android":
     from BIOMETRIC.boo import Bioo,run_on_ui_thread
 
@@ -110,7 +110,8 @@ class MainApp(MDApp):
     def build(self):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = 'Cyan'
-        self.authentication_done = False
+        self.authentication_one_done = False
+        self.authentication_all_done = False
         screens = [
                  IntoScreen(name="intoScreen"),
                  RegisterScreen(name="registerScreen"),
@@ -204,40 +205,47 @@ class MainApp(MDApp):
         else:
             self.wm.get_screen(self.wm.current).ids.response.text=codeResponse
     def refreshConversation(self,nap):
-        print(Server2.newMessages())
-        if Server2.newMessages()=="new":
-            Server2.closeMessage()
-            chatId=TempStore.usercode
-            mycode=TempStore.mycode       
-            name=TempStore.receiverName
-            self.wm.get_screen("conversationScreen").ids.loadConverstation.clear_widgets()
-            self.converationScreen(name=name,chatId=chatId)
+        if self.wm.current=='conversationScreen':
+            print(Server2.newMessages())
+            if Server2.newMessages()=="new":
+                Server2.closeMessage()
+                chatId=TempStore.usercode
+                mycode=TempStore.mycode       
+                name=TempStore.receiverName
+                self.wm.get_screen("conversationScreen").ids.loadConverstation.clear_widgets()
+                self.converationScreen(name=name,chatId=chatId,unlock='no')
     
     def CheckIntegrity(self,nap):
-        IntegrityLight=self.wm.get_screen("conversationScreen").ids.IntegrityCheckLight
-        if 'yes' in self.compromised:
-            IntegrityLight.icon='heart-broken'
-            if self.color=='red':
-                self.color='yellow'
-                IntegrityLight.color='yellow'
+        if self.wm.current=="conversationScreen":
+            IntegrityLight=self.wm.get_screen("conversationScreen").ids.IntegrityCheckLight
+            if 'yes' in self.compromised:
+                IntegrityLight.icon='heart-broken'
+                if self.color=='red':
+                    self.color='yellow'
+                    IntegrityLight.color='yellow'
+                else:
+                    IntegrityLight.color='red'
+                    self.color='red'
             else:
-                IntegrityLight.color='red'
-                self.color='red'
-        else:
-            if self.color=='green':
-                IntegrityLight.color='blue'
-                self.color='blue'
-            else:
-                IntegrityLight.color='green'
-                self.color='green'
+                if self.color=='green':
+                    IntegrityLight.color='blue'
+                    self.color='blue'
+                else:
+                    IntegrityLight.color='green'
+                    self.color='green'
     def Shufflekey(self,nap):
         chatId=TempStore.usercode
         mycode=TempStore.mycode       
         name=TempStore.receiverName
         self.wm.get_screen("conversationScreen").ids.loadConverstation.clear_widgets()
-        self.converationScreen(name=name,chatId=chatId)
+        self.converationScreen(name=name,chatId=chatId,unlock="no")
         
-    def converationScreen(self,name,chatId):
+    def callConverstionScreen(self,name,chatId,unlock):
+        self.ManageScreens("conversationScreen")
+        self.converationScreen(name=name,chatId=chatId,unlock=unlock)
+        
+        
+    def converationScreen(self,name,chatId,unlock):
         self.compromised=[]
         Clock.unschedule(self.refreshConversation)
         Clock.unschedule(self.CheckIntegrity)
@@ -258,7 +266,11 @@ class MainApp(MDApp):
                 user=message['user']
                 checksum=message['checksum']
                 self.msg=Converstations()
-                self.msg.msg=Encryption.encrypt(Integrity.generate_key(length=6),message=msg)
+                if unlock=="yes":
+                    showed=msg
+                else:
+                   showed=Encryption.encrypt(Integrity.generate_key(length=6),message=msg)
+                self.msg.msg=showed
                 self.msg.originalmsg=msg
                 self.msg.time=time
                 self.msg.sender=user
@@ -271,7 +283,7 @@ class MainApp(MDApp):
                     self.compromised.append('no')
         else:
             self.compromised.append('no')          
-        self.ManageScreens("conversationScreen")
+        
         # for refreshing the conversation screen
         self.color=''
         Clock.schedule_interval(self.refreshConversation, 3)
@@ -324,19 +336,39 @@ class MainApp(MDApp):
         if runon=="android":
             if str(Bioo().get_auth()) == "0":
                 Bioo().auth_now(self.my_auth_callback)
-                print("hello kenya")
         else:
-            pass
+            self.viewMessage()
 
     def my_auth_callback(self, args):
-        if not self.authentication_done:
+        if not self.authentication_one_done:
             MDApp.get_running_app().some_string = str(args)
             if str(args)=="success":
-                self.authentication_done = True
+                self.authentication_one_done = True
                 self.viewMessage()
         
         
-
+    def UnlockAllMessages(self):
+        chatId=TempStore.usercode
+        mycode=TempStore.mycode       
+        name=TempStore.receiverName
+        if runon=="android":
+            if str(Bioo().get_auth()) == "0":
+                Bioo().auth_now(self.unlockall_callback)
+        else:
+            self.wm.get_screen("conversationScreen").ids.loadConverstation.clear_widgets()
+            self.converationScreen(name=name,chatId=chatId,unlock="yes")
+            
+            
+    def unlockall_callback(self, args):
+        chatId=TempStore.usercode
+        mycode=TempStore.mycode       
+        name=TempStore.receiverName
+        if not self.authentication_all_done:
+            MDApp.get_running_app().some_string = str(args)
+            if str(args)=="success":
+                self.authentication_all_done = True
+                self.converationScreen(name=name,chatId=chatId,unlock="yes")
+        
 
 MainApp().run()
 
