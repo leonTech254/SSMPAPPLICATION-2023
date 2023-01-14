@@ -120,10 +120,8 @@ class MainApp(MDApp):
         data=Crud.myinfo()
         if data!="None":
             TempStore.mycode=data['code']
-            self.wm.current="intoScreen"
-            # self.wm.current="conversationScreen"
-            
-            
+            # self.wm.current="intoScreen"
+            self.wm.current="conversationScreen"
         else:
             self.wm.current="intoScreen"
             # self.wm.current="conversationScreen"
