@@ -1,6 +1,8 @@
 from kivy.app import App
 from kivy.uix.button import Button
+from kivy.uix.label import Label
 from jnius import autoclass
+from plyer import android
 
 class FingerprintApp(App):
     def build(self):
@@ -15,7 +17,7 @@ class FingerprintApp(App):
     def authenticate(self, *args):
         try:
             FingerprintManager = autoclass('android.hardware.fingerprint.FingerprintManager')
-            fingerprint_manager = FingerprintManager.fromContext(getActivity())
+            fingerprint_manager = FingerprintManager.fromContext(android.get_context())
             if not fingerprint_manager.isHardwareDetected():
                 self.label.text = "No fingerprint sensor found"
                 return
@@ -25,7 +27,7 @@ class FingerprintApp(App):
             self.label.text = "Authentication Successful"
         except Exception as e:
             self.label.text = "Authentication Failed"
-        Window.add_widget(self.label)
+        self.root.add_widget(self.label)
 
 if __name__ == "__main__":
     FingerprintApp().run()
