@@ -120,12 +120,12 @@ class MainApp(MDApp):
         data=Crud.myinfo()
         if data!="None":
             TempStore.mycode=data['code']
-            self.wm.current="chatScreen"
+            self.wm.current="intoScreen"
             # self.wm.current="conversationScreen"
             
             
         else:
-            self.wm.current="chatScreen"
+            self.wm.current="intoScreen"
             # self.wm.current="conversationScreen"
             
             
@@ -205,24 +205,23 @@ class MainApp(MDApp):
     
     def CheckIntegrity(self,nap):
         IntegrityLight=self.wm.get_screen("conversationScreen").ids.IntegrityCheckLight
-        print(self.color)
-        if self.compromised=="No":
-            if self.color=='green':
-                IntegrityLight.color='blue'
-                self.color='blue'
-            else:
-                IntegrityLight.color='green'
-                self.color='green'
-                
-        elif self.compromised=='yes':
+        if 'yes' in self.compromised:
             IntegrityLight.icon='heart-broken'
             if self.color=='red':
                 self.color='yellow'
                 IntegrityLight.color='yellow'
             else:
                 IntegrityLight.color='red'
-                self.color='red'            
+                self.color='red'
+        else:
+            if self.color=='green':
+                IntegrityLight.color='blue'
+                self.color='blue'
+            else:
+                IntegrityLight.color='green'
+                self.color='green'
     def converationScreen(self,name,chatId):
+        self.compromised=[]
         Clock.unschedule(self.refreshConversation)
         Clock.unschedule(self.CheckIntegrity)
         TempStore.usercode=chatId
@@ -235,6 +234,7 @@ class MainApp(MDApp):
         Server2.LoadConversation(chatCode=codeCombined,orCode=OrCode)
         if messagesResponse!="None":
             for message in messagesResponse:
+                msgFlag=message['msgFlag']
                 msg=message['msg']
                 time=message['time']
                 user=message['user']
@@ -245,9 +245,14 @@ class MainApp(MDApp):
                 self.msg.sender=user
                 self.msg.checksum=checksum
                 self.wm.get_screen("conversationScreen").ids.loadConverstation.add_widget(self.msg)
+                if msgFlag!='checked':
+                    self.compromised.append("yes")
+                else:
+                    self.compromised.append('no')
+        else:
+            self.compromised.append('no')          
         self.ManageScreens("conversationScreen")
         # for refreshing the conversation screen
-        self.compromised="yes"
         self.color=''
         Clock.schedule_interval(self.refreshConversation, 3)
         Clock.schedule_interval(self.CheckIntegrity, 1)

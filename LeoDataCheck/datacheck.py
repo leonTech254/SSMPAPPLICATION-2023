@@ -64,14 +64,13 @@ class ManageMessages:
             for message in messages:
                 allID=message["DeviceCode"]
                 myId=allID.split("-")[0]
-                print(myId)
-                print(mycode+"hear")
                 messageDict={}
                 messageDict['deviceID']=message["DeviceCode"]
                 messageDict['username']=message["chatKey"]    
                 messageDict['time']=message["MsgTimeStamp"]
                 messageDict['checksum']=message["msgCheckSum"]
                 messageDict['msg']=message["msg"]
+                messageDict['msgFlag']=message['msgFlag']
                 if allID==chatcode:
                     messageDict['user']='me'
                 else:
