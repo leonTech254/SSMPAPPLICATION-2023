@@ -171,8 +171,8 @@ class MainApp(MDApp):
                     self.allusers.code=deviceID
                     self.wm.get_screen("chatScreen").ids.allusersTab.ids.ssmpUsers.add_widget(self.allusers)
     def ManageScreens(self,screen):
-        # self.wm.current=screen
-        self.Fingerprint()
+        self.wm.current=screen
+        # self.Fingerprint()
     def RegisterFunc(self,phone,username):
         phoneResponse=Validate.phone(phone)
         if phoneResponse=="success":
@@ -293,16 +293,16 @@ class MainApp(MDApp):
         self.msg.sender=mycode
         self.msg.sender="me"
         self.wm.get_screen("conversationScreen").ids.loadConverstation.add_widget(self.msg)
-    def viewMessage(self,message,checksum,flag):
-        if flag!="checked":
+    def viewMessage(self):
+        if self.flagViewed!="checked":
             msgFlag="comprimised"
         else:
             msgFlag="not compromised"
         self.dialog = MDDialog(title="MESSAGE SUMMURY",type="simple",
                 items=[
-                Item(text="PLAIN MESSAGE",secondary_text=message,source="message-outline"),
-                Item(text="CHECKSUM",secondary_text=checksum,source="file-outline"),
-                Item(text="INTEGRITY",secondary_text=msgFlag,source="lock"),
+                Item(text="PLAIN MESSAGE",secondary_text=self.messageViewed,source="message-outline"),
+                Item(text="CHECKSUM",secondary_text=self.checksumViewed,source="file-outline"),
+                Item(text="INTEGRITY",secondary_text=self.flagViewed,source="lock"),
             ],
                 buttons=[
                 MDRaisedButton(text="CLOSE", on_press=self.closeMessageView),
@@ -312,11 +312,11 @@ class MainApp(MDApp):
     def closeMessageView(self,*args):
         self.dialog.dismiss()
         
-        
-        
                     
-    def Fingerprint(self):
-        
+    def Fingerprint(self,message,checksum,flag):
+        self.messageViewed=message
+        self.checksumViewed=checksum
+        self.flagViewed=flag
         if str(Bioo().get_auth()) == "0":
             Bioo().auth_now(self.my_auth_callback)
             print("hello kenya")
@@ -327,7 +327,7 @@ class MainApp(MDApp):
             MDApp.get_running_app().some_string = str(args)
             if str(args)=="success":
                 self.authentication_done = True
-                print("unlocked")
+                self.viewMessage()
         
         
 
