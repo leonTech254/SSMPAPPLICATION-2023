@@ -319,6 +319,7 @@ class MainApp(MDApp):
         if not self.authentication_done:
             if str(Bioo().get_auth()) == "0":
                 Bioo().auth_now(self.my_auth_callback)
+                print("hello kenya")
                 self.lockViewOnce=2
 
     def my_auth_callback(self, args):
