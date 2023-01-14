@@ -122,9 +122,12 @@ class MainApp(MDApp):
             TempStore.mycode=data['code']
             # self.wm.current="intoScreen"
             self.wm.current="conversationScreen"
+        elif data=='incomplete':
+            self.wm.current='ValidateScreen'
+            self.wm.get_screen(self.wm.current).ids.incomplete.text="complete registration"
         else:
             self.wm.current="intoScreen"
-            # self.wm.current="conversationScreen"
+        self.wm.current="ValidateScreen"
             
             
         self.allSSMPUsers()

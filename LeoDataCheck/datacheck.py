@@ -109,8 +109,11 @@ class Crud:
             for user in Users:
                 userInfo["code"]=user['DeviceCode']
                 userInfo['username']=user['username']
-                
-            return userInfo
+                userInfo['isValidated']=user['isValidated']
+                if userInfo['isValidated']!='true':
+                    return "incomplete"
+                else:
+                    return userInfo
     def InsertMessage(msg,code,date,phone,checksum):
         print(code)
         users="INSERT INTO Messages('chatKey','msg','phoneNumber','DeviceCode','MsgTimeStamp','msgCheckSum') VALUES(?,?,?,?,?,?)"

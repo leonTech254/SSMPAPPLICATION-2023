@@ -27,9 +27,21 @@
                 MDTextField:
                     hint_text:"ENTER CODE"
                     id:code
-                MDRaisedButton:
-                    text:"NEXT"
-                    on_press:app.CheckCode(code.text)
+                MDBoxLayout:
+                    adaptive_height:True
+                    spacing:"10dp"
+                    MDRaisedButton:
+                        text:"NEXT"
+                        on_press:app.CheckCode(code.text)
+                    MDRaisedButton:
+                        text:"REGIISTER"
+                        on_press:app.CheckCode(code.text)
+                MDLabel:
+                    text:" "
+                    id:incomplete
+                    halign:"center"
+                    adaptive_height:True
+                    color:"green"
                 Widget:
             
             
