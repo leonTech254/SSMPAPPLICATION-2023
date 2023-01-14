@@ -103,6 +103,8 @@ Window.softinput_mode = "below_target"
 
 
 class MainApp(MDApp):
+    def __init__(self):
+        self.authentication_done = False
     dialog = None
     def build(self):
         self.theme_cls.theme_style = "Dark"
@@ -314,12 +316,15 @@ class MainApp(MDApp):
         
                     
     def Fingerprint(self):
-        if str(Bioo().get_auth()) == "0":
+        if not self.authentication_done:
+            if str(Bioo().get_auth()) == "0":
                 Bioo().auth_now(self.my_auth_callback)
-                print("finger print")
+                self.lockViewOnce=2
+
     def my_auth_callback(self, args):
         MDApp.get_running_app().some_string = str(args)
         if str(args)=="success":
+            self.authentication_done = True
             print("unlocked")
         
         
