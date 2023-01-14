@@ -330,6 +330,7 @@ class MainApp(MDApp):
                     
     def Fingerprint(self,message,checksum,flag):
         print(platform.system())
+        self.authentication_one_done=False
         self.messageViewed=message
         self.checksumViewed=checksum
         self.flagViewed=flag
@@ -348,6 +349,7 @@ class MainApp(MDApp):
         
         
     def UnlockAllMessages(self):
+        self.authentication_all_done=False
         chatId=TempStore.usercode
         mycode=TempStore.mycode       
         name=TempStore.receiverName
