@@ -345,6 +345,7 @@ class MainApp(MDApp):
             MDApp.get_running_app().some_string = str(args)
             if str(args)=="success":
                 self.authentication_one_done = True
+                self.wm.get_screen("conversationScreen").ids.loadConverstation.clear_widgets()
                 self.viewMessage()
         
         
@@ -369,6 +370,7 @@ class MainApp(MDApp):
             MDApp.get_running_app().some_string = str(args)
             if str(args)=="success":
                 self.authentication_all_done = True
+                self.wm.get_screen("conversationScreen").ids.loadConverstation.clear_widgets()
                 self.converationScreen(name=name,chatId=chatId,unlock="yes")
         
 
