@@ -123,13 +123,14 @@ class MainApp(MDApp):
         return self.wm
     def on_start(self):
         data=Crud.myinfo()
-        if data!="None":
+        
+        if data=='incomplete':
+            self.wm.current='ValidateScreen'
+            self.wm.get_screen(self.wm.current).ids.incomplete.text="complete registration"
+        elif data!="None":
             TempStore.mycode=data['code']
             # self.wm.current="intoScreen"
             self.wm.current="conversationScreen"
-        elif data=='incomplete':
-            self.wm.current='ValidateScreen'
-            self.wm.get_screen(self.wm.current).ids.incomplete.text="complete registration"
         else:
             self.wm.current="intoScreen"
         # self.wm.current="chatScreen"
