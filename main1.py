@@ -1,5 +1,3 @@
-# cython: language_level=3
-
 from kivymd.app import MDApp
 from kivymd.uix.label import MDLabel
 from kivy.core.window import Window
@@ -27,6 +25,7 @@ class WindowManager(ScreenManager):
 
     def on_key(self, window, key, *args):
         if key == 27:
+            print("pressed")
             if self.current == 'registerScreen':
                 self.current = "intoScreen"
                 return True
@@ -51,7 +50,6 @@ class ChatScreen(Screen):
 
 class ConversationScreen(Screen):
     pass
-
 class ChatTab(MDFloatLayout,MDTabsBase):
     pass
 class Status(MDFloatLayout,MDTabsBase):
@@ -60,8 +58,6 @@ class Calls(MDFloatLayout,MDTabsBase):
     pass
 class FindFrinds(MDFloatLayout,MDTabsBase):
     pass
-
-
 class SsmpUsers(MDBoxLayout):
     image=StringProperty()
     name=StringProperty()
@@ -80,8 +76,10 @@ class Converstations(MDBoxLayout):
     sender=StringProperty()
     originalmsg=StringProperty()
     checksum=StringProperty()
+    flag=StringProperty()
 class Item(TwoLineAvatarListItem):
-    pass
+    source=StringProperty()
+    
 
 # file loading
 Builder.load_file("./Screens/Register.kv")
@@ -97,22 +95,26 @@ class TempStore:
     usercode=''
     receiverName=''
 
+
+#Window.size = (330, 600)
 Window.keyboard_anim_args = {'d': .2, 't': 'in_out_expo'}
 Window.softinput_mode = "below_target"
 
+
 class MainApp(MDApp):
-    
     dialog = None
     def build(self):
-        self.theme_cls.theme_style="Dark"
-        self.theme_cls.primary_palette="Cyan"
-        screens=[IntoScreen(name="intoScreen"),
+        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.primary_palette = 'Cyan'
+        screens = [
+                 IntoScreen(name="intoScreen"),
                  RegisterScreen(name="registerScreen"),
                  ValidateScreen(name='ValidateScreen'),
                  ChatScreen(name="chatScreen"),
                  ConversationScreen(name="conversationScreen")
-                 ]
-        self.wm=ScreenManager(transition=FadeTransition())
+                   ]
+        self.wm = WindowManager(transition=FadeTransition())
+
         for screen in screens:
             self.wm.add_widget(screen)
         return self.wm
@@ -120,13 +122,14 @@ class MainApp(MDApp):
         data=Crud.myinfo()
         if data!="None":
             TempStore.mycode=data['code']
-            # self.wm.current="chatScreen"
-            self.wm.current="chatScreen"
-            
-            
+            # self.wm.current="intoScreen"
+            self.wm.current="conversationScreen"
+        elif data=='incomplete':
+            self.wm.current='ValidateScreen'
+            self.wm.get_screen(self.wm.current).ids.incomplete.text="complete registration"
         else:
             self.wm.current="intoScreen"
-            # self.wm.current="chatScreen"
+        self.wm.current="chatScreen"
             
             
         self.allSSMPUsers()
@@ -164,9 +167,6 @@ class MainApp(MDApp):
                     self.allusers.name=username
                     self.allusers.code=deviceID
                     self.wm.get_screen("chatScreen").ids.allusersTab.ids.ssmpUsers.add_widget(self.allusers)
-               
-               
-        
     def ManageScreens(self,screen):
         self.wm.current=screen
     def RegisterFunc(self,phone,username):
@@ -205,15 +205,36 @@ class MainApp(MDApp):
             name=TempStore.receiverName
             self.wm.get_screen("conversationScreen").ids.loadConverstation.clear_widgets()
             self.converationScreen(name=name,chatId=chatId)
+    
     def CheckIntegrity(self,nap):
+        IntegrityLight=self.wm.get_screen("conversationScreen").ids.IntegrityCheckLight
+        if 'yes' in self.compromised:
+            IntegrityLight.icon='heart-broken'
+            if self.color=='red':
+                self.color='yellow'
+                IntegrityLight.color='yellow'
+            else:
+                IntegrityLight.color='red'
+                self.color='red'
+        else:
+            if self.color=='green':
+                IntegrityLight.color='blue'
+                self.color='blue'
+            else:
+                IntegrityLight.color='green'
+                self.color='green'
+    def Shufflekey(self,nap):
         chatId=TempStore.usercode
         mycode=TempStore.mycode       
         name=TempStore.receiverName
         self.wm.get_screen("conversationScreen").ids.loadConverstation.clear_widgets()
         self.converationScreen(name=name,chatId=chatId)
+        
     def converationScreen(self,name,chatId):
+        self.compromised=[]
         Clock.unschedule(self.refreshConversation)
         Clock.unschedule(self.CheckIntegrity)
+        Clock.unschedule(self.Shufflekey)
         TempStore.usercode=chatId
         mycode=TempStore.mycode
         codeCombined=f"{mycode}-"+f"{chatId}"
@@ -224,20 +245,31 @@ class MainApp(MDApp):
         Server2.LoadConversation(chatCode=codeCombined,orCode=OrCode)
         if messagesResponse!="None":
             for message in messagesResponse:
+                msgFlag=message['msgFlag']
                 msg=message['msg']
                 time=message['time']
                 user=message['user']
                 checksum=message['checksum']
                 self.msg=Converstations()
                 self.msg.msg=Encryption.encrypt(Integrity.generate_key(length=6),message=msg)
+                self.msg.originalmsg=msg
                 self.msg.time=time
                 self.msg.sender=user
                 self.msg.checksum=checksum
+                self.msg.flag=msgFlag
                 self.wm.get_screen("conversationScreen").ids.loadConverstation.add_widget(self.msg)
+                if msgFlag!='checked':
+                    self.compromised.append("yes")
+                else:
+                    self.compromised.append('no')
+        else:
+            self.compromised.append('no')          
         self.ManageScreens("conversationScreen")
         # for refreshing the conversation screen
+        self.color=''
         Clock.schedule_interval(self.refreshConversation, 3)
-        Clock.schedule_interval(self.CheckIntegrity, 10)
+        Clock.schedule_interval(self.CheckIntegrity, 1)
+        Clock.schedule_interval(self.Shufflekey, 5)
         
     def SendMessage(self,msg):
         mycode=TempStore.mycode
@@ -257,10 +289,16 @@ class MainApp(MDApp):
         self.msg.sender=mycode
         self.msg.sender="me"
         self.wm.get_screen("conversationScreen").ids.loadConverstation.add_widget(self.msg)
-    def viewMessage(self,message,checksum):
+    def viewMessage(self,message,checksum,flag):
+        if flag!="checked":
+            msgFlag="comprimised"
+        else:
+            msgFlag="not compromised"
         self.dialog = MDDialog(title="MESSAGE SUMMURY",type="simple",
-                items=[Item(text="PLAIN MESSAGE",secondary_text=message),
-                Item(text="CHECKSUM",secondary_text=checksum),
+                items=[
+                Item(text="PLAIN MESSAGE",secondary_text=message,source="message-outline"),
+                Item(text="CHECKSUM",secondary_text=checksum,source="file-outline"),
+                Item(text="INTEGRITY",secondary_text=msgFlag,source="lock"),
             ],
                 buttons=[
                 MDRaisedButton(text="CLOSE", on_press=self.closeMessageView),
@@ -278,5 +316,9 @@ class MainApp(MDApp):
 
 
 MainApp().run()
+
+
+
+
 
 
