@@ -76,8 +76,10 @@ class Converstations(MDBoxLayout):
     sender=StringProperty()
     originalmsg=StringProperty()
     checksum=StringProperty()
+    flag=StringProperty()
 class Item(TwoLineAvatarListItem):
-    pass
+    source=StringProperty()
+    
 
 # file loading
 Builder.load_file("./Screens/Register.kv")
@@ -127,6 +129,7 @@ class MainApp(MDApp):
             self.wm.get_screen(self.wm.current).ids.incomplete.text="complete registration"
         else:
             self.wm.current="intoScreen"
+        self.wm.current="chatScreen"
             
             
         self.allSSMPUsers()
@@ -220,10 +223,18 @@ class MainApp(MDApp):
             else:
                 IntegrityLight.color='green'
                 self.color='green'
+    def Shufflekey(self,nap):
+        chatId=TempStore.usercode
+        mycode=TempStore.mycode       
+        name=TempStore.receiverName
+        self.wm.get_screen("conversationScreen").ids.loadConverstation.clear_widgets()
+        self.converationScreen(name=name,chatId=chatId)
+        
     def converationScreen(self,name,chatId):
         self.compromised=[]
         Clock.unschedule(self.refreshConversation)
         Clock.unschedule(self.CheckIntegrity)
+        Clock.unschedule(self.Shufflekey)
         TempStore.usercode=chatId
         mycode=TempStore.mycode
         codeCombined=f"{mycode}-"+f"{chatId}"
@@ -241,9 +252,11 @@ class MainApp(MDApp):
                 checksum=message['checksum']
                 self.msg=Converstations()
                 self.msg.msg=Encryption.encrypt(Integrity.generate_key(length=6),message=msg)
+                self.msg.originalmsg=msg
                 self.msg.time=time
                 self.msg.sender=user
                 self.msg.checksum=checksum
+                self.msg.flag=msgFlag
                 self.wm.get_screen("conversationScreen").ids.loadConverstation.add_widget(self.msg)
                 if msgFlag!='checked':
                     self.compromised.append("yes")
@@ -256,6 +269,7 @@ class MainApp(MDApp):
         self.color=''
         Clock.schedule_interval(self.refreshConversation, 3)
         Clock.schedule_interval(self.CheckIntegrity, 1)
+        Clock.schedule_interval(self.Shufflekey, 5)
         
     def SendMessage(self,msg):
         mycode=TempStore.mycode
@@ -275,10 +289,16 @@ class MainApp(MDApp):
         self.msg.sender=mycode
         self.msg.sender="me"
         self.wm.get_screen("conversationScreen").ids.loadConverstation.add_widget(self.msg)
-    def viewMessage(self,message,checksum):
+    def viewMessage(self,message,checksum,flag):
+        if flag!="checked":
+            msgFlag="comprimised"
+        else:
+            msgFlag="not compromised"
         self.dialog = MDDialog(title="MESSAGE SUMMURY",type="simple",
-                items=[Item(text="PLAIN MESSAGE",secondary_text=message),
-                Item(text="CHECKSUM",secondary_text=checksum),
+                items=[
+                Item(text="PLAIN MESSAGE",secondary_text=message,source="message-outline"),
+                Item(text="CHECKSUM",secondary_text=checksum,source="file-outline"),
+                Item(text="INTEGRITY",secondary_text=msgFlag,source="lock"),
             ],
                 buttons=[
                 MDRaisedButton(text="CLOSE", on_press=self.closeMessageView),
