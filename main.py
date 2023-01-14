@@ -18,7 +18,7 @@ from Network.leoNetwork import Server2,serverStore
 from kivy.clock import Clock
 import requests
 import platform
-runon='androdid'
+runon='android'
 if runon=="android":
     from BIOMETRIC.boo import Bioo,run_on_ui_thread
 
