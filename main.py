@@ -103,12 +103,12 @@ Window.softinput_mode = "below_target"
 
 
 class MainApp(MDApp):
-    def __init__(self):
-        self.authentication_done = False
     dialog = None
     def build(self):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = 'Cyan'
+        self.authentication_done = False
+
         screens = [
                  IntoScreen(name="intoScreen"),
                  RegisterScreen(name="registerScreen"),
