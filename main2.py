@@ -1,3 +1,5 @@
+# cython: language_level=3
+
 from kivymd.app import MDApp
 from kivymd.uix.label import MDLabel
 from kivy.core.window import Window
@@ -25,7 +27,6 @@ class WindowManager(ScreenManager):
 
     def on_key(self, window, key, *args):
         if key == 27:
-            print("pressed")
             if self.current == 'registerScreen':
                 self.current = "intoScreen"
                 return True
@@ -50,6 +51,7 @@ class ChatScreen(Screen):
 
 class ConversationScreen(Screen):
     pass
+
 class ChatTab(MDFloatLayout,MDTabsBase):
     pass
 class Status(MDFloatLayout,MDTabsBase):
@@ -58,6 +60,8 @@ class Calls(MDFloatLayout,MDTabsBase):
     pass
 class FindFrinds(MDFloatLayout,MDTabsBase):
     pass
+
+
 class SsmpUsers(MDBoxLayout):
     image=StringProperty()
     name=StringProperty()
@@ -93,26 +97,22 @@ class TempStore:
     usercode=''
     receiverName=''
 
-
-#Window.size = (330, 600)
 Window.keyboard_anim_args = {'d': .2, 't': 'in_out_expo'}
 Window.softinput_mode = "below_target"
 
-
 class MainApp(MDApp):
+    
     dialog = None
     def build(self):
-        self.theme_cls.theme_style = "Dark"
-        self.theme_cls.primary_palette = 'Cyan'
-        screens = [
-                 IntoScreen(name="intoScreen"),
+        self.theme_cls.theme_style="Dark"
+        self.theme_cls.primary_palette="Cyan"
+        screens=[IntoScreen(name="intoScreen"),
                  RegisterScreen(name="registerScreen"),
                  ValidateScreen(name='ValidateScreen'),
                  ChatScreen(name="chatScreen"),
                  ConversationScreen(name="conversationScreen")
-                   ]
-        self.wm = WindowManager(transition=FadeTransition())
-
+                 ]
+        self.wm=ScreenManager(transition=FadeTransition())
         for screen in screens:
             self.wm.add_widget(screen)
         return self.wm
@@ -278,9 +278,5 @@ class MainApp(MDApp):
 
 
 MainApp().run()
-
-
-
-
 
 

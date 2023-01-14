@@ -2,16 +2,15 @@
     MDBoxLayout:
         orientation:"vertical"
         MDTopAppBar:
-            title: 'SSMP APPLICATION'
+            title: 'SSMPAPP'
             pos_hint: {"top": 1}
             elevation: 4
             use_overflow: True
             right_action_items:
                 [
                 ["home", lambda x: app.callback(x), "Home", "Home"],
-                ["message-star", lambda x: app.callback(x), "Message star", "Message star"],
-                ["message-question", lambda x: app.callback(x), "Message question", "Message question"],
-                ["message-reply", lambda x: app.callback(x), "Message reply", "Message reply"],
+                ["airplane", lambda x: app.callback(x), "airplane", "airplane"],
+                ["alert-circle", lambda x: app.callback(x), "alert-circle", "alert-circle"],
                 ]
         MDTabs:
             ChatTab:

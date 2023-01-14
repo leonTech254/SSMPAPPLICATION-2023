@@ -69,7 +69,7 @@ class Server2:
         serverStore.orcode=orCode
         data = {'chatcode':chatCode,'orcode':orCode}
         # params = urllib.parse.urlencode(data)
-        url='http://127.0.0.1:5000/ssmp/load/conversation'
+        url='https://api2.leonteqsecurity.com/ssmp/load/conversation'
         params = urllib.parse.urlencode(data)
         headers = {'Content-type': 'application/x-www-form-urlencoded',
                     'Accept': 'text/plain'}
@@ -87,7 +87,7 @@ class Server2:
     #     serverStore.orcode=orCode
     #     data = {'chatcode':chatCode,'orcode':orCode}
     #     # params = urllib.parse.urlencode(data)
-    #     url='http://127.0.0.1:5000/ssmp/messages'
+    #     url='https://api2.leonteqsecurity.com/ssmp/messages'
     #     params = urllib.parse.urlencode(data)
     #     headers = {'Content-type': 'application/x-www-form-urlencoded',
     #                 'Accept': 'text/plain'}

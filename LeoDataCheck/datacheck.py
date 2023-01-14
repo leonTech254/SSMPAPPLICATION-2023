@@ -162,19 +162,19 @@ class Server:
         return "None"
     
     def registerUser(username,phone,deviceID):
-        url="http://127.0.0.1:5000/ssmp/allusers"
+        url="https://api2.leonteqsecurity.com/ssmp/allusers"
         data = {'username': username,'phone':phone,'deviceID':deviceID}
         response = requests.post(url, json=data)
         print(response.status_code)
         contents=response.json()
         return contents['message']
     def getUsers():
-        url="http://127.0.0.1:5000/ssmp/allusers"
+        url="https://api2.leonteqsecurity.com/ssmp/allusers"
         response = requests.get(url)
         contents=response.json()
         return contents['users']
     def SendMessage(msg,code,date,phone,checksum):
-        url="http://127.0.0.1:5000/ssmp/messages"
+        url="https://api2.leonteqsecurity.com/ssmp/messages"
         data = {'chatKey': code,'msg':msg,'time':date,'code':code,'checksum':checksum}
         response = requests.post(url, json=data)
         print(response.status_code)
@@ -182,7 +182,7 @@ class Server:
         return contents['message']
     
     def LoadConversation(chatCode,orCode):
-        url="http://127.0.0.1:5000/ssmp/load/conversation"
+        url="https://api2.leonteqsecurity.com/ssmp/load/conversation"
         data = {'chatcode':chatCode,'orcode':orCode}
         try:
             response = requests.post(url, json=data,timeout=5)
