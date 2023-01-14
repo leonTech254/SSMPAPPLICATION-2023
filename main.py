@@ -1,12 +1,9 @@
 from kivy.app import App
 from kivy.uix.button import Button
-from kivy.uix.label import Label
-from kivy.garden.fingerprint import Fingerprint
+from jnius import autoclass
 
 class FingerprintApp(App):
     def build(self):
-        self.finger = Fingerprint()
-        self.finger.start()
         self.title = "Fingerprint App"
         self.btn = Button(text="Authenticate", on_press=self.authenticate, font_size=30)
         self.label = Label(text="", font_size=20)
@@ -16,11 +13,18 @@ class FingerprintApp(App):
         return self.btn
 
     def authenticate(self, *args):
-        if self.finger.is_available():
-            self.finger.authenticate()
+        try:
+            FingerprintManager = autoclass('android.hardware.fingerprint.FingerprintManager')
+            fingerprint_manager = FingerprintManager.fromContext(getActivity())
+            if not fingerprint_manager.isHardwareDetected():
+                self.label.text = "No fingerprint sensor found"
+                return
+            if not fingerprint_manager.hasEnrolledFingerprints():
+                self.label.text = "No fingerprints enrolled"
+                return
             self.label.text = "Authentication Successful"
-        else:
-            self.label.text = "Fingerprint scanner not available"
+        except Exception as e:
+            self.label.text = "Authentication Failed"
         Window.add_widget(self.label)
 
 if __name__ == "__main__":
