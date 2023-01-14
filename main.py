@@ -316,17 +316,18 @@ class MainApp(MDApp):
         
                     
     def Fingerprint(self):
-        if not self.authentication_done:
-            if str(Bioo().get_auth()) == "0":
-                Bioo().auth_now(self.my_auth_callback)
-                print("hello kenya")
-                self.lockViewOnce=2
+        
+        if str(Bioo().get_auth()) == "0":
+            Bioo().auth_now(self.my_auth_callback)
+            print("hello kenya")
+            self.lockViewOnce=2
 
     def my_auth_callback(self, args):
-        MDApp.get_running_app().some_string = str(args)
-        if str(args)=="success":
-            self.authentication_done = True
-            print("unlocked")
+        if not self.authentication_done:
+            MDApp.get_running_app().some_string = str(args)
+            if str(args)=="success":
+                self.authentication_done = True
+                print("unlocked")
         
         
 
