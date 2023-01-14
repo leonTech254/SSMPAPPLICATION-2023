@@ -110,7 +110,6 @@ class MainApp(MDApp):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = 'Cyan'
         self.authentication_done = False
-
         screens = [
                  IntoScreen(name="intoScreen"),
                  RegisterScreen(name="registerScreen"),
@@ -135,7 +134,7 @@ class MainApp(MDApp):
             self.wm.current="conversationScreen"
         else:
             self.wm.current="intoScreen"
-        # self.wm.current="chatScreen"
+        self.wm.current="chatScreen"
             
             
         self.allSSMPUsers()
@@ -317,6 +316,7 @@ class MainApp(MDApp):
         
                     
     def Fingerprint(self,message,checksum,flag):
+        print(platform.system())
         self.messageViewed=message
         self.checksumViewed=checksum
         self.flagViewed=flag
