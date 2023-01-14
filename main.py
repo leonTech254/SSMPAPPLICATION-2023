@@ -120,13 +120,13 @@ class MainApp(MDApp):
         data=Crud.myinfo()
         if data!="None":
             TempStore.mycode=data['code']
-            # self.wm.current="chatScreen"
             self.wm.current="chatScreen"
+            # self.wm.current="conversationScreen"
             
             
         else:
-            self.wm.current="intoScreen"
-            # self.wm.current="chatScreen"
+            self.wm.current="chatScreen"
+            # self.wm.current="conversationScreen"
             
             
         self.allSSMPUsers()
@@ -164,9 +164,6 @@ class MainApp(MDApp):
                     self.allusers.name=username
                     self.allusers.code=deviceID
                     self.wm.get_screen("chatScreen").ids.allusersTab.ids.ssmpUsers.add_widget(self.allusers)
-               
-               
-        
     def ManageScreens(self,screen):
         self.wm.current=screen
     def RegisterFunc(self,phone,username):
@@ -205,12 +202,26 @@ class MainApp(MDApp):
             name=TempStore.receiverName
             self.wm.get_screen("conversationScreen").ids.loadConverstation.clear_widgets()
             self.converationScreen(name=name,chatId=chatId)
+    
     def CheckIntegrity(self,nap):
-        chatId=TempStore.usercode
-        mycode=TempStore.mycode       
-        name=TempStore.receiverName
-        self.wm.get_screen("conversationScreen").ids.loadConverstation.clear_widgets()
-        self.converationScreen(name=name,chatId=chatId)
+        IntegrityLight=self.wm.get_screen("conversationScreen").ids.IntegrityCheckLight
+        print(self.color)
+        if self.compromised=="No":
+            if self.color=='green':
+                IntegrityLight.color='blue'
+                self.color='blue'
+            else:
+                IntegrityLight.color='green'
+                self.color='green'
+                
+        elif self.compromised=='yes':
+            IntegrityLight.icon='heart-broken'
+            if self.color=='red':
+                self.color='yellow'
+                IntegrityLight.color='yellow'
+            else:
+                IntegrityLight.color='red'
+                self.color='red'            
     def converationScreen(self,name,chatId):
         Clock.unschedule(self.refreshConversation)
         Clock.unschedule(self.CheckIntegrity)
@@ -236,8 +247,10 @@ class MainApp(MDApp):
                 self.wm.get_screen("conversationScreen").ids.loadConverstation.add_widget(self.msg)
         self.ManageScreens("conversationScreen")
         # for refreshing the conversation screen
+        self.compromised="yes"
+        self.color=''
         Clock.schedule_interval(self.refreshConversation, 3)
-        Clock.schedule_interval(self.CheckIntegrity, 10)
+        Clock.schedule_interval(self.CheckIntegrity, 1)
         
     def SendMessage(self,msg):
         mycode=TempStore.mycode
