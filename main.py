@@ -18,7 +18,8 @@ from Network.leoNetwork import Server2,serverStore
 from kivy.clock import Clock
 import requests
 import platform
-if platform.system()=="Android":
+runon='android'
+if runon=="android":
     from BIOMETRIC.boo import Bioo,run_on_ui_thread
 
 class WindowManager(ScreenManager):
@@ -320,7 +321,7 @@ class MainApp(MDApp):
         self.messageViewed=message
         self.checksumViewed=checksum
         self.flagViewed=flag
-        if platform.system()=="Android":
+        if runon=="android":
             if str(Bioo().get_auth()) == "0":
                 Bioo().auth_now(self.my_auth_callback)
                 print("hello kenya")
