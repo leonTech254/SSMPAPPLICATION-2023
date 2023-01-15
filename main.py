@@ -20,7 +20,10 @@ import requests
 import platform
 runon='android'
 if runon=="android":
-    from BIOMETRIC.boo import Bioo,run_on_ui_thread
+    try:
+        from BIOMETRIC.boo import Bioo,run_on_ui_thread
+    except:
+        runon="linux"
 
 class WindowManager(ScreenManager):
     def __init__(self, **kwargs):
@@ -67,6 +70,7 @@ class SsmpUsers(MDBoxLayout):
     name=StringProperty()
     code=StringProperty()
     last_msg=StringProperty()
+    phone=StringProperty()
 class ChatUser(MDCard):
     image=StringProperty()
     name=StringProperty()
@@ -169,10 +173,12 @@ class MainApp(MDApp):
                 else:
                     username=user['username']
                     deviceID=user["code"]
+                    phone=user['phone']
                     self.allusers=SsmpUsers()
                     self.allusers.image="hello"
                     self.allusers.name=username
                     self.allusers.code=deviceID
+                    self.allusers.phone="+"+phone
                     self.wm.get_screen("chatScreen").ids.allusersTab.ids.ssmpUsers.add_widget(self.allusers)
     def ManageScreens(self,screen):
         self.wm.current=screen

@@ -3,7 +3,7 @@
     adaptive_height:True
     MDCard:
         adaptive_height:True
-        height:60
+        height:80
         spacing:"20dp"
         MDBoxLayout:
             spacing:"10dp"
@@ -19,10 +19,23 @@
                     id:imageProfile
                     source:"Screenshot_20220721_163833.png"
                     radius:[60,]
-            MDLabel:
-                # adaptive_height:True
-                id:name
-                text: root.name
+            MDBoxLayout:
+                orientation:"vertical"
+                adaptive_height:True
+                pos_hint:{'center_y':.5}
+                MDLabel:
+                    id:name
+                    text: root.name
+                    bold:True
+                    adaptive_height:True
+                MDLabel:
+                    text: f"[i]{root.phone}[/i]"
+                    adaptive_height:True
+                    markup:True
+
+                Widget:
+
+
         MDBoxLayout:
             width:root.width
             orientation:"vertical"

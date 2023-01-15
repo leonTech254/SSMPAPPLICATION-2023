@@ -79,7 +79,7 @@ class ManageMessages:
             return MessagesList
     def Chats():
         check = f"SELECT * FROM Chats"
-        messages = cursor.execute(check).fetchall()
+        messages = cursor.execute(check).fetchall().reverse()
         ChatList=[]
         if not messages:
             return "None"
@@ -129,7 +129,6 @@ class Crud:
             values=(f'{username}',f'{message}',f'{code}',f'{date}')
             cursor.execute(users, values)
             conn.commit()
-            print("inserted")
             return "None"
         else:
             # update 
