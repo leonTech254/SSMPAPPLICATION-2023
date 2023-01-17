@@ -141,7 +141,7 @@ class MainApp(MDApp):
             self.wm.current="chatScreen"
         else:
             self.wm.current="intoScreen"
-        self.wm.current="conversationScreen"
+        # self.wm.current="conversationScreen"
             
             
         self.allSSMPUsers()
@@ -315,6 +315,8 @@ class MainApp(MDApp):
         self.msg.sender=mycode
         self.msg.sender="me"
         self.wm.get_screen("conversationScreen").ids.loadConverstation.add_widget(self.msg)
+        self.wm.get_screen("conversationScreen").ids.message.text=' '
+        
     def viewMessage(self):
         if self.flagViewed!="checked":
             msgFlag="comprimised"
