@@ -1,82 +1,83 @@
 <ConversationScreen>
     MDBoxLayout:
         orientation:"vertical"
-        MDBoxLayout:
-            adaptive_height:True
-            height:"100dp"
-            md_bg_color:app.theme_cls.primary_color
-            spacing:"10dp"
-            MDCard:
-                size_hint:None,None
-                size:50,50
-                radius:"50dp"
-                md_bg_color:1,1,0,.7
-                pos_hint:{"center_y":.5,"center_x":.5}
-                elevation:0
-                FitImage:
-                    id:imageProfile
-                    source:"Screenshot_20220721_163833.png"
-                    radius:[50,]
+        ScrollView:
             MDBoxLayout:
                 adaptive_height:True
-                orientation:"vertical"
-                MDLabel:
-                    id:username
-                    text:" "
-                    adaptive_height:True
-                    bold:True
-                MDLabel:
-                    text:" "
-                    id:online_status
-                    adaptive_height:True
-                Widget:
-            MDBoxLayout:
-                adaptive_height:True
-                spacing:"20dp"
-                MDIconButton:
-                    icon:"video"
-                MDIconButton:
-                    icon:"phone"
-                MDIconButton:
-                    icon:"dots-vertical"
-
-            
-
-        MDBoxLayout:
-            adaptive_height:True
-            height:"100dp"
-            md_bg_color:app.theme_cls.primary_color
-            MDCard:
+                height:"100dp"
                 md_bg_color:app.theme_cls.primary_color
-                adaptive_height:True
-                radius:[20,20,0,0]
-                padding:"10px"
+                spacing:"10dp"
+                MDCard:
+                    size_hint:None,None
+                    size:50,50
+                    radius:"50dp"
+                    md_bg_color:1,1,0,.7
+                    pos_hint:{"center_y":.5,"center_x":.5}
+                    elevation:0
+                    FitImage:
+                        id:imageProfile
+                        source:"Screenshot_20220721_163833.png"
+                        radius:[50,]
                 MDBoxLayout:
                     adaptive_height:True
                     orientation:"vertical"
                     MDLabel:
-                        text:"Integrity Check"
+                        id:username
+                        text:" "
                         adaptive_height:True
-                        halign:"center"
-                    MDIcon:
-                        id:IntegrityCheckLight
-                        icon:"heart"
-                        # color:'green'
-                        pos_hint: {'center_x': 0.5,'center_y': 0.5}
-                        font_size: "40dp"
-                Widget:
-
+                        bold:True
+                    MDLabel:
+                        text:" "
+                        id:online_status
+                        adaptive_height:True
+                    Widget:
                 MDBoxLayout:
                     adaptive_height:True
-                    orientation:"vertical"
-                    MDLabel:
-                        text:"Unlock messages"
-                        adaptive_height:True
-                        halign:"center"
+                    spacing:"20dp"
                     MDIconButton:
-                        icon:"key-chain-variant"
-                        pos_hint: {'center_x': 0.5,'center_y': 0.5}
-                        on_press:app.UnlockAllMessages()
+                        icon:"video"
+                    MDIconButton:
+                        icon:"phone"
+                    MDIconButton:
+                        icon:"dots-vertical"
+
+                
+            
+                MDBoxLayout:
+                    adaptive_height:True
+                    height:"100dp"
+                    md_bg_color:app.theme_cls.primary_color
+                    MDCard:
+                        md_bg_color:app.theme_cls.primary_color
+                        adaptive_height:True
+                        radius:[20,20,0,0]
+                        padding:"10px"
+                        MDBoxLayout:
+                            adaptive_height:True
+                            orientation:"vertical"
+                            MDLabel:
+                                text:"Integrity Check"
+                                adaptive_height:True
+                                halign:"center"
+                            MDIcon:
+                                id:IntegrityCheckLight
+                                icon:"heart"
+                                # color:'green'
+                                pos_hint: {'center_x': 0.5,'center_y': 0.5}
+                                font_size: "40dp"
+                        Widget:
+
+                        MDBoxLayout:
+                            adaptive_height:True
+                            orientation:"vertical"
+                            MDLabel:
+                                text:"Unlock messages"
+                                adaptive_height:True
+                                halign:"center"
+                            MDIconButton:
+                                icon:"key-chain-variant"
+                                pos_hint: {'center_x': 0.5,'center_y': 0.5}
+                                on_press:app.UnlockAllMessages()
         ScrollView:
             MDBoxLayout:
                 adaptive_height:True

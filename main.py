@@ -138,10 +138,10 @@ class MainApp(MDApp):
         elif data!="None":
             TempStore.mycode=data['code']
             # self.wm.current="intoScreen"
-            self.wm.current="conversationScreen"
+            self.wm.current="chatScreen"
         else:
             self.wm.current="intoScreen"
-        # self.wm.current="chatScreen"
+        self.wm.current="conversationScreen"
             
             
         self.allSSMPUsers()

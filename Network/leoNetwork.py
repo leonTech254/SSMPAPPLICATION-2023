@@ -16,6 +16,7 @@ class Server2:
         localmessages = cursor.execute(check).fetchall()
         contents=result
         messages=contents['messages']
+        print(contents)
         if len(messages)>len(localmessages):
             # q="DELETE FROM messages"
             # cursor.execute(q)
