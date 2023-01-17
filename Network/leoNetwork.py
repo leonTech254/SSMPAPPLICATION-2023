@@ -24,7 +24,7 @@ class Server2:
             try:
                 if flag!='checked':
                     print("unchecked")
-                    query=f"UPDATE Messages SET msgFlag='{flag}',msg='{msg}' WHERE DeviceCode='{code}' AND checksum='{checksum}'"
+                    query=f"UPDATE Messages SET msgFlag='{flag}',msg='{msg}' WHERE chatKey='{code}' AND msgCheckSum='{checksum}'"
                     conn.execute(query)
                     conn.commit()
             except:
