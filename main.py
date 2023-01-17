@@ -22,6 +22,7 @@ runon='android'
 if runon=="android":
     try:
         from BIOMETRIC.boo import Bioo,run_on_ui_thread
+        from DEVICE.leosms import SMSReaderApp
     except:
         runon="linux"
 
@@ -140,7 +141,7 @@ class MainApp(MDApp):
             self.wm.current="conversationScreen"
         else:
             self.wm.current="intoScreen"
-        self.wm.current="chatScreen"
+        # self.wm.current="chatScreen"
             
             
         self.allSSMPUsers()
