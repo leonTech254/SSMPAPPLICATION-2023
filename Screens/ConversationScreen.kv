@@ -1,45 +1,56 @@
 <ConversationScreen>
     MDBoxLayout:
         orientation:"vertical"
-        ScrollView:
-            MDBoxLayout:
-                adaptive_height:True
-                height:"100dp"
-                md_bg_color:app.theme_cls.primary_color
-                spacing:"10dp"
-                MDCard:
-                    size_hint:None,None
-                    size:50,50
-                    radius:"50dp"
-                    md_bg_color:1,1,0,.7
-                    pos_hint:{"center_y":.5,"center_x":.5}
-                    elevation:0
-                    FitImage:
-                        id:imageProfile
-                        source:"Screenshot_20220721_163833.png"
-                        radius:[50,]
-                MDBoxLayout:
-                    adaptive_height:True
-                    orientation:"vertical"
-                    MDLabel:
-                        id:username
-                        text:" "
-                        adaptive_height:True
-                        bold:True
-                    MDLabel:
-                        text:" "
-                        id:online_status
-                        adaptive_height:True
-                    Widget:
-                MDBoxLayout:
-                    adaptive_height:True
-                    spacing:"20dp"
-                    MDIconButton:
-                        icon:"video"
-                    MDIconButton:
-                        icon:"phone"
-                    MDIconButton:
-                        icon:"dots-vertical"
+        MDTopAppBar:
+            title: 'SSMPAPP'
+            pos_hint: {"top": 1}
+            elevation: 4
+            use_overflow: True
+            right_action_items:
+                [
+                ["home", lambda x: app.callback(x), "Home", "Home"],
+                ["airplane", lambda x: app.callback(x), "airplane", "airplane"],
+                ["alert-circle", lambda x: app.callback(x), "alert-circle", "alert-circle"],
+                ]
+        # ScrollView:
+        #     MDBoxLayout:
+        #         adaptive_height:True
+        #         height:"100dp"
+        #         md_bg_color:app.theme_cls.primary_color
+        #         spacing:"10dp"
+        #         MDCard:
+        #             size_hint:None,None
+        #             size:50,50
+        #             radius:"50dp"
+        #             md_bg_color:1,1,0,.7
+        #             pos_hint:{"center_y":.5,"center_x":.5}
+        #             elevation:0
+        #             FitImage:
+        #                 id:imageProfile
+        #                 source:"Screenshot_20220721_163833.png"
+        #                 radius:[50,]
+        #         MDBoxLayout:
+        #             adaptive_height:True
+        #             orientation:"vertical"
+        #             MDLabel:
+        #                 id:username
+        #                 text:" "
+        #                 adaptive_height:True
+        #                 bold:True
+        #             MDLabel:
+        #                 text:" "
+        #                 id:online_status
+        #                 adaptive_height:True
+        #             Widget:
+        #         MDBoxLayout:
+        #             adaptive_height:True
+        #             spacing:"20dp"
+        #             MDIconButton:
+        #                 icon:"video"
+        #             MDIconButton:
+        #                 icon:"phone"
+        #             MDIconButton:
+        #                 icon:"dots-vertical"
 
                 
             
