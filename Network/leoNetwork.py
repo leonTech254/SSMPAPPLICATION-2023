@@ -16,7 +16,19 @@ class Server2:
         localmessages = cursor.execute(check).fetchall()
         contents=result
         messages=contents['messages']
-        print(contents)
+        for message in messages:
+            flag=message['flag']
+            msg=message['msg']
+            code=message['deviceID']
+            checksum=message['checksum']
+            try:
+                if flag!='checked':
+                    print("unchecked")
+                    query=f"UPDATE Messages SET msgFlag='{flag}',msg='{msg}' WHERE DeviceCode='{code}' AND checksum='{checksum}'"
+                    conn.execute(query)
+                    conn.commit()
+            except:
+                pass
         if len(messages)>len(localmessages):
             # q="DELETE FROM messages"
             # cursor.execute(q)
