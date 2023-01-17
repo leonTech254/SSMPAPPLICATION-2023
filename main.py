@@ -25,7 +25,7 @@ if runon=="android":
         from DEVICE.leosms import SMSReaderApp
     except:
         runon="linux"
-
+Window.softinput_mode = 'pan'
 class WindowManager(ScreenManager):
     def __init__(self, **kwargs):
         super(WindowManager, self).__init__(**kwargs)
