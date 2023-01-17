@@ -54,41 +54,41 @@
 
                 
             
-                MDBoxLayout:
-                    adaptive_height:True
-                    height:"100dp"
-                    md_bg_color:app.theme_cls.primary_color
-                    MDCard:
-                        md_bg_color:app.theme_cls.primary_color
-                        adaptive_height:True
-                        radius:[20,20,0,0]
-                        padding:"10px"
-                        MDBoxLayout:
-                            adaptive_height:True
-                            orientation:"vertical"
-                            MDLabel:
-                                text:"Integrity Check"
-                                adaptive_height:True
-                                halign:"center"
-                            MDIcon:
-                                id:IntegrityCheckLight
-                                icon:"heart"
-                                # color:'green'
-                                pos_hint: {'center_x': 0.5,'center_y': 0.5}
-                                font_size: "40dp"
-                        Widget:
+                # MDBoxLayout:
+                #     adaptive_height:True
+                #     height:"100dp"
+                #     md_bg_color:app.theme_cls.primary_color
+                #     MDCard:
+                #         md_bg_color:app.theme_cls.primary_color
+                #         adaptive_height:True
+                #         radius:[20,20,0,0]
+                #         padding:"10px"
+                #         MDBoxLayout:
+                #             adaptive_height:True
+                #             orientation:"vertical"
+                #             MDLabel:
+                #                 text:"Integrity Check"
+                #                 adaptive_height:True
+                #                 halign:"center"
+                #             MDIcon:
+                #                 id:IntegrityCheckLight
+                #                 icon:"heart"
+                #                 # color:'green'
+                #                 pos_hint: {'center_x': 0.5,'center_y': 0.5}
+                #                 font_size: "40dp"
+                #         Widget:
 
-                        MDBoxLayout:
-                            adaptive_height:True
-                            orientation:"vertical"
-                            MDLabel:
-                                text:"Unlock messages"
-                                adaptive_height:True
-                                halign:"center"
-                            MDIconButton:
-                                icon:"key-chain-variant"
-                                pos_hint: {'center_x': 0.5,'center_y': 0.5}
-                                on_press:app.UnlockAllMessages()
+                #         MDBoxLayout:
+                #             adaptive_height:True
+                #             orientation:"vertical"
+                #             MDLabel:
+                #                 text:"Unlock messages"
+                #                 adaptive_height:True
+                #                 halign:"center"
+                #             MDIconButton:
+                #                 icon:"key-chain-variant"
+                #                 pos_hint: {'center_x': 0.5,'center_y': 0.5}
+                #                 on_press:app.UnlockAllMessages()
         ScrollView:
             MDBoxLayout:
                 adaptive_height:True
