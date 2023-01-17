@@ -1,117 +1,120 @@
-<ConversationScreen>
-    MDBoxLayout:
+<conversationScreen>:
+    MDCard:
         orientation:"vertical"
+        md_bg_color:1,0,1,1
         MDTopAppBar:
-            title: 'SSMPAPP'
-            pos_hint: {"top": 1}
-            elevation: 4
-            use_overflow: True
-            right_action_items:
-                [
-                ["home", lambda x: app.callback(x), "Home", "Home"],
-                ["airplane", lambda x: app.callback(x), "airplane", "airplane"],
-                ["alert-circle", lambda x: app.callback(x), "alert-circle", "alert-circle"],
-                ]
-        # ScrollView:
-        #     MDBoxLayout:
-        #         adaptive_height:True
-        #         height:"100dp"
-        #         md_bg_color:app.theme_cls.primary_color
-        #         spacing:"10dp"
-        #         MDCard:
-        #             size_hint:None,None
-        #             size:50,50
-        #             radius:"50dp"
-        #             md_bg_color:1,1,0,.7
-        #             pos_hint:{"center_y":.5,"center_x":.5}
-        #             elevation:0
-        #             FitImage:
-        #                 id:imageProfile
-        #                 source:"Screenshot_20220721_163833.png"
-        #                 radius:[50,]
-        #         MDBoxLayout:
-        #             adaptive_height:True
-        #             orientation:"vertical"
-        #             MDLabel:
-        #                 id:username
-        #                 text:" "
-        #                 adaptive_height:True
-        #                 bold:True
-        #             MDLabel:
-        #                 text:" "
-        #                 id:online_status
-        #                 adaptive_height:True
-        #             Widget:
-        #         MDBoxLayout:
-        #             adaptive_height:True
-        #             spacing:"20dp"
-        #             MDIconButton:
-        #                 icon:"video"
-        #             MDIconButton:
-        #                 icon:"phone"
-        #             MDIconButton:
-        #                 icon:"dots-vertical"
+            md_bg_color:mynav.md_bg_color
+            size_hint_y:None
+            height:dp(20)
+            left_action_items: [["arrow-left-bold", lambda x:app.exit_chat("mainScreen")]]
+        MDCard:
+            id:mynav
+            orientation:"horizontal"
+            elevation:1
+            size_hint:None,None
+            size:root.width,120
+            md_bg_color:app.theme_cls.primary_color
+            elevation:10
+            MDBoxLayout:
+                spacing:dp(10)
+                MDCard:
+                    size_hint:None,None
+                    size:90,90
+                    radius:[45,]
+                    elevation:0
+                    pos_hint:{"center_y":.5}
+                    FitImage:
+                        radius:[45,]
+                        source:"root.profileIcon"
+                MDBoxLayout:
+                    adaptive_height:True
+                    adaptive_width:True
+                    pos_hint:{"center_y":.6}
+                    MDBoxLayout:
+                        orientation:"vertical"
+                        adaptive_height:True
+                        MDLabel:
+                            text:"root.chatName"
+                            halign:"left"
+                            adaptive_height:True
+                            bold:True
+                        MDLabel:
+                            text:"online"
+                            halighn:"center"
+                            adaptive_height:True
+            MDBoxLayout:
+                adaptive_size:True
+                pos_hint:{"center_x":1,"center_y":.5}
+                MDIconButton:
+                    icon:"video"
+                MDIconButton:
+                    icon:"phone"
+                MDIconButton:
+                    icon:"key"
+                    on_press:app.decrypt_allMessages()
+                MDIconButton:
+                    icon:"help"
 
-                
-            
-                # MDBoxLayout:
-                #     adaptive_height:True
-                #     height:"100dp"
-                #     md_bg_color:app.theme_cls.primary_color
-                #     MDCard:
-                #         md_bg_color:app.theme_cls.primary_color
-                #         adaptive_height:True
-                #         radius:[20,20,0,0]
-                #         padding:"10px"
-                #         MDBoxLayout:
-                #             adaptive_height:True
-                #             orientation:"vertical"
-                #             MDLabel:
-                #                 text:"Integrity Check"
-                #                 adaptive_height:True
-                #                 halign:"center"
-                #             MDIcon:
-                #                 id:IntegrityCheckLight
-                #                 icon:"heart"
-                #                 # color:'green'
-                #                 pos_hint: {'center_x': 0.5,'center_y': 0.5}
-                #                 font_size: "40dp"
-                #         Widget:
+        MDTopAppBar:
+            md_bg_color:mynav.md_bg_color
+            size_hint_y:None
+            height:dp(20)
+            right_action_items: [["checkbox-blank-circle", lambda x:x]]
+            text_color: rgba('#F0F0F0')
+            specific_text_color: 0,1,0,1
+            id:mytoolbar
+            adaptive_width:True
+            MDLabel:
+                text:"integrity"
+                size_hint_x:None
+                halign:"right"
+                bold:True
 
-                #         MDBoxLayout:
-                #             adaptive_height:True
-                #             orientation:"vertical"
-                #             MDLabel:
-                #                 text:"Unlock messages"
-                #                 adaptive_height:True
-                #                 halign:"center"
-                #             MDIconButton:
-                #                 icon:"key-chain-variant"
-                #                 pos_hint: {'center_x': 0.5,'center_y': 0.5}
-                #                 on_press:app.UnlockAllMessages()
+
         ScrollView:
             MDBoxLayout:
-                adaptive_height:True
                 orientation:"vertical"
-                spacing:"8dp"
-                id:loadConverstation
+                adaptive_height:True
+                MDList:
+                    spacing:5
+                    id:chatsmsg
         MDBoxLayout:
             adaptive_height:True
-            spacing:"10dp"
-            MDTextField:
-                id:message
-                hint_text:"write message"
-                multiline:True
-                mode:"fill"
-            MDRaisedButton:
-                text:"SEND"
-                on_press:app.SendMessage(msg=message.text)
+            MDBoxLayout:
+                MDTextField:
+                    id:msginput
+                    hint_text:"type message"
+                    pos_hint:{'center_y':.5}
+                    multiline:True
+                    icon_left:'key-variant'
+            MDBoxLayout:
+                adaptive_width:True
+                MDRoundFlatIconButton:
+                    text:"SEND"
+                    icon:"send"
+                    pos_hint:{'center_y':.5}
+                    on_press:app.send_msg(msginput.text)
 
-                
+<Avatar@RelativeLayout>:
+    size:(dp(45),dp(45))
+    size_hint:None,None
+    source:"root.source"
+    MDCard:
+        size:root.size
+        size_hint:(None,None)
+        radius:[30,]
+        md_bg_color:app.theme_cls.primary_color
+        elevation:0
+        position_hint:{'center_x':.5,'center_y':.5}
+    FitImage:
+        size:root.size[0]-dp(3),root.size[1]-dp(3)
+        size_hint:None,None
+        source:root.source
+        radius:[30,]
+        pos_hint:{'center_x':.5,'center_y':.5}
 
-    
-
-            
-
-        
-    
+<Item>:
+    on_release:app.athenticationMethod(self.text)
+    IconLeftWidget:
+        id:try
+        icon:root.source
